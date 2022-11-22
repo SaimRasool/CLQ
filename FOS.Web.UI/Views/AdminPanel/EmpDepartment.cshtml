@@ -1,0 +1,266 @@
+﻿@model FOS.Shared.EmpDepartmentData
+@{
+    ViewBag.Title = "Employee Department";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- BEGIN PAGE HEADER-->
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN THEME CUSTOMIZER-->
+        <!-- END THEME CUSTOMIZER-->
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title"></h3>
+        <ul class="breadcrumb">
+            <li>
+                <a href="#">Admin Panel</a>
+                <span class="divider">/</span>
+            </li>
+            <li>
+                <a href="#">Manage Emp Department</a>
+            </li>
+
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+
+
+<!-- BEGIN PAGE CONTENT-->
+<div class="row-fluid">
+    <div class="span12">
+        <div class="widget box green">
+            <div class="widget-title">
+                <h4>Manage Emp Department
+                </h4>
+                <span class="tools">
+                </span>
+            </div>
+            <div class="widget-body">
+                <div class="control-group form-horizontal">
+                    <label class="control-label">Select Category *</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(model => model.CategoryID, new SelectList(Model.Dept, "ID", "Name"))
+                        @Html.ValidationMessageFor(model => model.CategoryID)
+                    </div>
+                </div>
+                <!-- Role Name -->
+                <div class="control-group form-horizontal">
+                    <label class="control-label">User</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(model => model.EmpID, new SelectList(Model.UsersList, "ID", "UserName"), new { @class = "input-xlarge", @style = "width: 212px;" })
+                    </div>
+                </div>
+
+                <div class="row" style="margin-left: 0px;margin-top: 20px;">
+                    <div class="span12">
+                        <input type="checkbox" id="cbSelectAll" style="margin: -3px 0 0;" /><span style="padding-left: 7px; font-weight: bold; color: #bb000c">Select All</span>
+                            <div>
+                                <ul class="nav nav-list tree" id="forms_ul" style="font-size: 12px;"></ul>          
+                            </div>
+                    </div>
+                </div>
+
+
+                <div class="row" style="margin-left: 0px;margin-top: 20px;">
+                <!-- Buttons -->
+                    <div class="form-actions" style="float: right;padding-right: 15px;margin-top: -10px;border-top:0px;background:none">
+                        <button type="submit" class="btn btn-small btn-success" id="btnSubmit" onclick="FormValidation()"><i class="icon-ok icon-white" style="padding-right:8px" ></i><span id="create">Create</span></button>
+                        <button type="button" class="btn btn-small btn-inverse" id="btnRefresh" onclick=""><i class="icon-ban-circle icon-white" style="padding-right:8px"></i>Reset</button>
+                    </div>                
+                   </div>
+            
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END PAGE CONTENT-->
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#liAdminPanel,#liRoles").addClass("active");
+
+        var WriteCheck = "0";
+
+        if (WriteCheck == "@HttpContext.Current.Session["WriteCheck"]") {
+            $("#btnSubmit").attr("disabled", true);
+        }
+        else {
+        }
+   
+
+
+        $("#cbSelectAll").click(function () {
+            $('input:checkbox').not(this).prop('checked', this.checked);
+        });
+
+        $("#EmpID").change(function () {
+            if ($("#EmpID").val() !== '' && $("#EmpID").val() !== 0 && $("#CategoryID").val() !== '' && $("#CategoryID").val() !== 0)
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetEmpDepartment", "AdminPanel")",
+                data: {
+                    UserID: $("#EmpID").val(), CategoryID: $("#CategoryID").val()
+                },
+            success: function (data) {
+                if (data != null) {
+                    $("#forms_ul").html("");
+                    $("#forms_ul").append(data);
+                }
+                else { alertify.error('An Error Occured, Try Again.'); }
+                }
+            });
+        });
+    
+    
+
+        $("#btnRefresh").click(function () {
+            ClearForm();
+        });
+        var EmpDepartmentData = [];
+        $("#btnSubmit").click(function () {
+            $("input[name=page]").each(function () {
+
+                if ($(this).attr('data-id') != "") {
+                    EmpDepartmentData.push({
+                        DeptID: $(this).attr("data-id"),
+                        EmpID: $("#EmpID").val(),
+                        IsActive: $(this).is(":checked") ? true : false
+
+                    });
+                }
+
+            });
+
+              
+                if ( $("#CategoryID").val() == '' || $("#CategoryID").val() == '0') {
+                    alertify.error("Please Select Category");
+                }
+                else if ($("#EmpID").val() == '' || $("#EmpID").val() == '0') {
+                    alertify.error("Please Select User Name");
+                }
+                else {
+
+                    if (EmpDepartmentData.length > 0) {
+
+                        $.ajax({
+                            url: "@Url.Action("AddUpdateEmpDepartment", "AdminPanel")",
+                            data:
+                        JSON.stringify({
+                            EmpDepartmentData: EmpDepartmentData
+                        }),
+                        cache: false,
+                        type: "POST",
+                        contentType: 'application/json',
+                        success: function (data) {
+
+                            if (data == 0) {
+                                alertify.success("Department Assign Successfully !!!");
+                                $("#btnRefresh").trigger('click');
+                                ClearForm();
+                            }
+                            if (data == 2) {
+                                alertify.error("Role is Already Exist");
+                                $("#txtRoleName").addClass("has-error");
+                            }
+                            if (data == 1) {
+                                alertify.error("Error Occurred.");
+                            }
+
+                        }
+                    });
+                }
+                    else { alertify.error("Please Select Department"); }
+                }
+            //end submit click
+            });
+
+
+          //end document ready
+        });
+
+    function ClearForm() {
+            $('#txtRoleName').val('');
+
+            $('#cbSelectAll').trigger('click');
+            $("#cbSelectAll").prop('checked', false);
+            $('#cbSelectAll input:checkbox').removeAttr('checked');
+
+            PageAction = null;
+        }
+    function OnSuccess(response) {
+        if (response == "1") {
+            alertify.success("EmpDepartment Saved Successfully.");
+            $('#create').text('Create');
+            var dt = $('#datatab').DataTable();
+            dt.ajax.reload();
+            ClearForm();
+        }
+        else if (response == "0") {
+            alertify.error("Unable To Save EmpDepartment.");
+        }
+        else {
+            alertify.error(response);
+        }
+
+    }
+
+    function OnFailure(response) {
+        if (response.status == 422) {
+            var errors = JSON.parse(response.responseText);
+            alertify.error(errors.errors);
+        }
+        else {
+            alertify.error(response);
+        }
+    }
+ 
+</script>
+
+
+
+<script>
+
+    $(document).ajaxComplete(function () {
+
+        $(".page").bind().change(function () {
+
+            var a = $(this).attr('data-id');
+
+            $("input.cbAction"+a+"").prop('checked', this.checked);
+        });
+    });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

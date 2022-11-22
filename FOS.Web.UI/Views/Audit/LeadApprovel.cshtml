@@ -1,0 +1,239 @@
+﻿@model FOS.Shared.QAData
+
+@{
+    ViewBag.Title = "Lead Approvel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row-fluid">
+    <div class="span12">
+        <h3 class="page-title"></h3>
+    </div>
+</div>
+
+<div class="form-horizontal">
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN SAMPLE FORMPORTLET-->
+            <div class="widget green" style="">
+                <div class="widget-title">
+                    <h4>Lead Approvel</h4>
+                    <span class="tools">
+                    </span>
+                </div>
+                <div class="widget-body">
+                    <!-- BEGIN FORM-->
+                    <div class="control-group">
+                        <label class="control-label">Select Region *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.RegionID, new SelectList(Model.RegionsList, "ID", "Name"))
+                            @Html.ValidationMessageFor(model => model.RegionID)
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Select Category *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.DeptID, new SelectList(Model.Dept, "ID", "Name"))
+                            @Html.ValidationMessageFor(model => model.DeptID)
+                            @Html.HiddenFor(model => model.QAID)
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Select Center *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.SubDeptID, new SelectList(Model.SubDept, "ID", "SubDepartment"))
+                            @Html.ValidationMessageFor(model => model.DeptID)
+                        </div>
+                    </div>           
+                    <div class="control-group" style="border-top: 1px solid #e5e5e5;">
+                        <div class="form-actions" style="padding-left: 240px;">
+                            <button type="button" class="btn btn-small btn-info" id="btnReport"><i class="icon-save icon-white" style="padding-right: 8px;"></i>Save</button>
+                        </div>
+                    </div>
+
+                    <!-- END FORM-->
+                </div>
+            </div>
+            <!-- END SAMPLE FORM PORTLET-->
+        </div>
+    </div>
+</div>
+
+<!-- BEGIN EDITABLE TABLE widget-->
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN EXAMPLE TABLE widget-->
+        <div class="widget green">
+            <div class="widget-title">
+                <h4>Approvel Detail</h4>
+            </div>
+            <div class="widget-body">
+                <div>
+                    <div class="clearfix">
+                        <div class="btn-group pull-right"></div>
+                    </div>
+                    <div class="space15"></div>
+                    <table class="table table-bordered" id="demoGrid" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Center</th>
+                                <th>Lead Approvel</th>
+                                <th>Lead Approvel Date</th>
+                                <th>Admin Approvel</th>
+                                <th>Admin Approvel Date</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE widget-->
+    </div>
+</div>
+
+
+<script>
+
+    function LoadSubDepartment() {
+        try {
+            var RegionID = $("#RegionID").val();
+            var deptID = $("#DeptID").val();
+            $.ajax({
+                type: "POST",
+                data: { DeptID: deptID, RegionID: RegionID },
+                url: "@Url.Action("GetSubDepartmentListByDeptAndRegionWise", "Admin")",
+                dataType: 'json',
+                success: function (json) {
+                    //  debugger;
+                    var $el = $("#SubDeptID");
+                    $el.empty(); // remove old options
+                    $.each(json, function (value, key) {
+
+                        $el.append($("<option></option>")
+                                .val(key.ID).text(key.Name));
+                    });
+                }
+            });
+        } catch (e) {
+            $('#datatab').dataTable().fnDestroy();
+        }
+    }
+    function LoadCenterDepartment() {
+        try {
+            var deptID = $("#DeptID").val();
+            $.ajax({
+                type: "POST",
+                data: { CategoryID: deptID },
+                url: "@Url.Action("GetCenterDepartmentListByDeptWise", "Admin")",
+                dataType: 'json',
+                success: function (json) {
+                    var $el = $("#CenterDeptID");
+                    $el.empty(); // remove old options
+                    $.each(json, function (value, key) {
+
+                        $el.append($("<option></option>")
+                                .val(key.ID).text(key.Name));
+                    });
+
+                }
+
+            });
+        } catch (e) {
+            $('#datatab').dataTable().fnDestroy();
+        }
+
+    }
+    $("#RegionID").change(function () {
+        LoadSubDepartment();
+        LoadCenterDepartment();
+    });
+    $("#DeptID").change(function () {
+        LoadSubDepartment();
+        LoadCenterDepartment();
+    });
+
+    function GetReport(CategoryID, CenterID, RegionID) {
+        window.location.href="@Url.Action("UpdateLeadApprovel", "Audit")" + "?CategoryID=" + CategoryID + "&CenterID=" + CenterID + "&RegionID=" + RegionID;
+    }
+
+    $("#btnReport").click(function () {
+        var CategoryID = $("#DeptID").val();
+        var CenterID = $("#SubDeptID").val();
+        var RegionID = $("#RegionID").val();
+        GetReport(CategoryID, CenterID, RegionID);
+    });
+
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#demoGrid').DataTable({
+            "serverSide": true,
+            "bDestroy": true,
+            "autoWidth": true,
+            "filter": true,
+            "processing": true,
+            "ajax": {
+                "type": "POST",
+                "url": '@Url.Action("LoadData", "Audit")',
+                "datatype": "json"
+            },           
+            "oLanguage": { "sSearch": "Search Approvel : " },
+            "sDom": 'lftipr',          
+            "columnDefs": [{
+                "targets": [0],
+                "visible": false,
+                "searchable": true
+            }],
+            "columns": [
+                 { "data": "ID" },
+                { "data": "Center" },
+                {
+                    "data": "LeadApprovel", "name": "LeadApprovel", "autoWidth": true,
+                    "render": function (data, type, full, meta) {
+                        if (data === true)
+                            return '<span class="label label-success p-2 text-center">Approved</span >';
+                        else
+                            return '<span class="bg-gradient-warning p-2 text-center">Pending</span >';
+                    }
+                },
+                {
+                    "data": "LeadApprovelDate", "type": "date ", "className": "text-center",
+                    "render": function (value) {
+                        if (value === null) return "";
+                        var pattern = /Date\(([^)]+)\)/;//date format from server side
+                        var results = pattern.exec(value);
+                        var dt = new Date(parseFloat(results[1]));
+
+                        return dt.getDate() + "/" + (dt.getMonth() + 1) + "/" + dt.getFullYear();
+                    }, "autoWidth": true
+                },
+                {
+                    "data": "AdminApprovel", "name": "AdminApprovel", "autoWidth": true,
+                    "render": function (data, type, full, meta) {
+                        if (data === true)
+                            return '<span class="label label-success p-2 text-center">Approved</span >';
+                        else
+                            return '<span class="label label-warning p-2 text-center">Pending</span >';
+                    }
+                },
+                {
+                    "data": "AdminApprovelDate", "type": "date ", "className": "text-center",
+                    "render": function (value) {
+                        if (value === null) return "";
+                        var pattern = /Date\(([^)]+)\)/;//date format from server side
+                        var results = pattern.exec(value);
+                        var dt = new Date(parseFloat(results[1]));
+
+                        return dt.getDate() + "/" + (dt.getMonth() + 1) + "/" + dt.getFullYear();
+                    }, "autoWidth": true
+                },
+            ],
+            "order": [3, "asc"]
+
+        });
+
+    });
+</script>

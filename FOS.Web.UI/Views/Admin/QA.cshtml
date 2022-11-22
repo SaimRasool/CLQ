@@ -1,0 +1,513 @@
+﻿@model FOS.Shared.QAData
+
+@{
+    ViewBag.Title = "QA";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href='~/Content/Style/fullcalendar.min.css' rel='stylesheet' />
+<link href='~/Content/Style/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+<script src='~/Scripts/lib/moment.min.js'></script>
+<script src='~/Scripts/lib/jquery-ui.min.js'></script>
+<script src='~/Scripts/lib/fullcalendar.min.js'></script>
+<link href="~/Content/Style/jquery-ui.min.css" rel="stylesheet" />
+<!-- BEGIN PAGE HEADER-->
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN THEME CUSTOMIZER-->
+        <!-- END THEME CUSTOMIZER-->
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title"></h3>
+        <ul class="breadcrumb" style="background-color: #08c">
+            <li>
+                <a href="#">Setup</a>
+                <span class="divider">/</span>
+            </li>
+            <li>
+                <a href="#">Manage Center</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+@using (Html.BeginForm("AddUpdateQA", "Admin",FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true)
+
+    <div class="row-fluid">  
+            <!-- BEGIN SAMPLE FORMPORTLET-->
+            <div class="widget green" style="">
+                <div class="widget-title">
+                    <h4>Manage Doctor</h4>
+                    <span class="tools">
+                        @*<a href="javascript:;" class="icon-chevron-down"></a>*@
+                        @*<a href="javascript:;" class="icon-remove"></a>*@
+                    </span>
+                </div>
+                <div class="widget-body">
+                    <div class="span5">
+                        <!-- BEGIN FORM-->
+                        <!--Select Prefix-->
+                      
+                        <!-- EFName -->
+                        <div class="control-group">
+                            <label class="control-label">Select Category *</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(model => model.DeptID, new SelectList(Model.Dept, "ID", "Name"))
+                                @Html.ValidationMessageFor(model => model.DeptID)
+                                @Html.HiddenFor(model => model.QAID)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Select Department *</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(model => model.CenterDeptID, new SelectList(Model.CenterDept, "ID", "Name"))
+                                @Html.ValidationMessageFor(model => model.CenterDeptID)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Question Hint</label>
+                            <div class="controls">
+                                @Html.TextAreaFor(model => model.QuestionHint)
+                                @Html.ValidationMessageFor(model => model.QuestionHint)
+                            </div>
+                        </div>
+                        
+                        <div class="control-group" style="border-top: 1px solid #e5e5e5;">
+                            <div class="form-actions" style="padding-left:238px">
+                                <button type="submit" id="btnNew" class="btn btn-primary">
+                                    <i class="icon-ok icon-white" style="padding-right:8px"></i><span id="create">Create</span>
+                                </button>
+                                <button type="button" id="btnRefresh" class="btn btn-info"><i class="icon-ban-circle icon-white" style="padding-right:8px"></i>Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span5">
+
+                        <div class="control-group">
+                            <label class="control-label">Select Center *</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(model => model.SubDeptID, new SelectList(Model.SubDept, "ID", "SubDepartment"))
+                                @Html.ValidationMessageFor(model => model.DeptID)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Add Question</label>
+                            <div class="controls">
+                                @Html.TextAreaFor(model => model.QuestionName)
+                                @Html.ValidationMessageFor(model => model.QuestionName)
+                            </div>
+                        </div>
+                     
+
+                        <!-- Buttons -->
+                     
+                    </div>
+                   
+                    
+
+                        <!-- END FORM-->
+                    </div>
+            </div>
+            <!-- END SAMPLE FORM PORTLET-->      
+    </div>
+}
+<!-- BEGIN EDITABLE TABLE widget-->
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN EXAMPLE TABLE widget-->
+        <div class="widget green">
+            <div class="widget-title">
+                <h4>View Detail</h4>
+                <span class="tools">
+                    @*<a href="javascript:;" class="icon-chevron-down"></a>*@
+                    @*<a href="javascript:;" class="icon-remove"></a>*@
+                </span>
+            </div>
+            <div class="widget-body">
+                <div>
+                    <div class="clearfix">
+                        @*<div class="btn-group">
+                                <button id="editable-sample_new" class="btn green">
+                                    Add New <i class="icon-plus"></i>
+                                </button>
+                            </div>*@
+                        <div class="btn-group pull-right"></div>
+                    </div>
+                    <div class="space15"></div>
+                    <table class="table table-striped table-hover table-bordered" id="datatab" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.QAID)
+                                </th>
+
+                                <th style="width: 3% !important">Sr #</th>
+
+                                <th style="width:15% !important">
+                                    Question
+                                </th>
+                                <th style="width:15% !important">
+                                    Question Hint
+                                </th>
+                            
+
+                                <th style="width:4% !important">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE widget-->
+    </div>
+</div>
+<!-- END EDITABLE TABLE widget-->
+
+<script>
+    function LoadSubDepartment() {
+        try {
+            var deptID = $("#DeptID").val();
+
+            $.ajax({
+                type: "POST",
+                data: { DeptID: deptID },
+                url: "@Url.Action("GetSubDepartmentListByDeptWise", "Admin")",
+                dataType: 'json',
+            success: function (json) {
+                debugger;
+                var $el = $("#SubDeptID");
+                $el.empty(); // remove old options
+                $.each(json, function (value, key) {
+
+                    $el.append($("<option></option>")
+                            .val(key.ID).text(key.Name));
+                });
+
+            }
+
+        });
+    } catch (e) {
+        alert(e);
+        $('#datatab').dataTable().fnDestroy();
+    }
+
+    }
+    $("#DeptID").change(function () {
+        LoadSubDepartment();
+    });
+    function LoadCenterDepartment() {
+        try {
+            debugger;
+            var deptID = $("#DeptID").val();
+
+            $.ajax({
+                type: "POST",
+                data: { CategoryID: deptID },
+                url: "@Url.Action("GetCenterDepartmentListByDeptWise", "Admin")",
+                dataType: 'json',
+            success: function (json) {
+                debugger;
+                var $el = $("#CenterDeptID");
+                $el.empty(); // remove old options
+                $.each(json, function (value, key) {
+
+                    $el.append($("<option></option>")
+                            .val(key.ID).text(key.Name));
+                });
+
+            }
+
+        });
+    } catch (e) {
+        alert(e);
+        $('#datatab').dataTable().fnDestroy();
+    }
+
+    }
+    $("#SubDeptID").change(function () {
+        debugger;
+        LoadCenterDepartment();
+    });
+    function GenerateDetailGrid() {
+
+        //$('#datatab tfoot th').each(function () {
+        //    $(this).html('<input type="text" />');
+        //});
+        var oTable = $('#datatab').DataTable({
+            "aLengthMenu": [[10, 25, 50, 75, 100], [10, 25, 50, 75, 100]],
+            "iDisplayLength": 10,
+            "paging": true,
+            "pagingType": "full_numbers",
+            "serverSide": true,
+            "bRetrieve": true,
+            "bDestroy": true,
+            "autoWidth": true,
+            "ajax": {
+                "type": "POST",
+                "url": '@Url.Action("QADataHandler", "Admin")',
+                "contentType": 'application/json; charset=utf-8',
+                'data': function (data) {
+                    data.ID = $('#ID').val();
+                    return data = JSON.stringify(data);
+
+                },
+
+            },
+            "fnDrawCallback": function (osetting) {
+                debugger;
+                var UpdateCheck = "0";
+                var DeleteCheck = "0";
+
+                if (UpdateCheck == "@HttpContext.Current.Session["UpdateCheck"]") { $(".edit").css("display", "none"); }
+            else {
+                    $(".edit").on("click", function () {
+                        debugger;
+                        ClearForm();
+                        var ID = $(this).attr("data-id");
+                        var SubDepartment = $(this).attr("data-name");
+                        var Department = $(this).attr("data-Department");
+                        $('#QAID').val($(this).attr("data-id"));
+                        $('#create').text('Update');
+                        $("#QuestionName").val($(this).attr("data-name"));
+                        $("#QuestionHint").val($(this).attr("data-QHint"));
+                        //$("#Dept:selected").val($(this).attr("data-Department")).change();
+
+                        //$('#ddDept').find('option[text="1"]').attr('selected', 'selected');
+                        //alert($("#ddDept").val(Department));
+                    
+
+                        $('html, body').animate({
+                            scrollTop: $("#main-content").offset().top
+                        }, 500);
+                        $("#QAID").focus();
+
+                    });
+            }
+
+                if (UpdateCheck == "@HttpContext.Current.Session["DeleteCheck"]") { $(".delete").css("display", "none"); }
+                else {
+                    $(".delete").on("click", function () {
+                        debugger;
+                        var ID = $(this).attr("data-id");
+
+                        // confirm dialog
+                        alertify.confirm("Are You Sure You Want To Delete This Record ?  ", function (e) {
+                            if (e) {
+                                debugger;
+                                $.ajax({
+                                    type: "POST",
+                                    url: "@Url.Action("DeleteQA", "Admin")",
+                                    data: { ID: ID },
+                                success: function (data) {
+
+                                    if (data == "0") {
+                                        alertify.success('Record Deleted Successfully');
+                                        var table = $('#datatab').DataTable();
+                                        table.row(this).remove().draw(false);
+                                    }
+
+                                    else { alertify.error('No Deleted Successfully!'); }
+                                }
+
+                            });
+
+                        } else { }
+    });
+
+    });
+    }
+    },
+    "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+        $("td:first", nRow).html(iDisplayIndex + 1);
+        return nRow;
+    },
+                "oLanguage": { "sSearch": "Search Question : " },
+                "sDom": 'lftipr',
+                "processing": true,
+                "deferRender": true,
+                "bSelect": true,
+                "columns": [
+               { "data": "QAID", "bVisible": false },
+               { "data": "QuestionName", "bSortable": false },               
+               { "data": "QuestionName" },
+               { "data": "QuestionHint" },            
+               {
+                   "sClass": "center-align-td",
+                   "mData": null,
+                   "bSortable": false,
+                   "mRender": function (data, type, row) {
+                       //return '<button class="btn btn-success edit" data-id=' + row.QAID + ' data-name=' + '"' + row.QuestionName + '>' + '<i class=icon-pencil></i>' + '</button>&nbsp;<button class="btn btn-info delete" data-id=' + row.QAID + '>' + '<i class=icon-trash></i>' + '</button>';
+                       return '<button class="btn btn-success edit" data-id=' + row.QAID + ' data-name=' + '"' + row.QuestionName + ' data-QHint=' + '"' + row.QuestionHint + '"' + '>' + '<i class=icon-pencil></i>' + '</button>&nbsp;<button class="btn btn-info delete" data-id=' + row.QAID + '>' + '<i class=icon-trash></i>' + '</button>';
+                   }
+               }
+                ],
+                "order": [2, "asc"]
+
+    });
+
+    }
+    @*function GenerateDetailGrid() {
+        debugger;
+        //$('#datatab tfoot th').each(function () {
+        //    $(this).html('<input type="text" />');
+        //});
+        var oTable = $('#datatab').DataTable({
+            "aLengthMenu": [[10, 25, 50, 75, 100], [10, 25, 50, 75, 100]],
+            "iDisplayLength": 10,
+            "paging": true,
+            "pagingType": "full_numbers",
+            "serverSide": true,
+            "bRetrieve": true,
+            "bDestroy": true,
+            "autoWidth": true,
+            "ajax": {
+                "type": "POST",
+                "url": '@Url.Action("QADataHandler", "Admin")',
+                "contentType": 'application/json; charset=utf-8',
+                'data': function (data) {
+                    data.ID = $('#QAID').val();
+                    return data = JSON.stringify(data);
+
+                },
+            },
+            "fnDrawCallback": function (osetting) {
+
+                var UpdateCheck = "0";
+                var DeleteCheck = "0";
+
+                if (UpdateCheck == "@HttpContext.Current.Session["UpdateCheck"]") { $(".edit").css("display", "none"); }
+                else {
+                    $(".edit").on("click", function () {
+                        debugger;
+                        ClearForm();
+                        var EmpID = $(this).attr("data-id");
+                
+                     
+                        $('#QAID').val($(this).attr("data-id"));
+                        $('#create').text('Update');
+                        $("#QuestionName").val($(this).attr("data-QName"));
+                        $('html, body').animate({
+                            scrollTop: $("#main-content").offset().top
+                        }, 500);
+                        $("#QAID").focus();
+
+                    });
+                }
+
+                if (UpdateCheck == "@HttpContext.Current.Session["DeleteCheck"]") { $(".delete").css("display", "none"); }
+                else {
+                    $(".delete").on("click", function () {
+                        debugger;
+                        var ID = $(this).attr("data-id");
+
+                        // confirm dialog
+                        alertify.confirm("Are You Sure You Want To Delete This Record ?  ", function (e) {
+                            if (e) {
+                                debugger;
+                                $.ajax({
+                                    type: "POST",
+                                    url: "@Url.Action("DeleteSubDepartment", "Admin")",
+                                        data: { ID: ID },
+                                        success: function (data) {
+
+                                            if (data == "0") {
+                                                alertify.success('Record Deleted Successfully');
+                                                var table = $('#datatab').DataTable();
+                                                table.row(this).remove().draw(false);
+                                            }
+
+                                            else { alertify.error('No Deleted Successfully!'); }
+                                        }
+
+                                    });
+
+                                } else { }
+                            });
+
+                        });
+                    }
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $("td:first", nRow).html(iDisplayIndex + 1);
+                    return nRow;
+                },
+                "oLanguage": { "sSearch": "Search Doctor : " },
+                "sDom": 'lftipr',
+                "processing": true,
+                "deferRender": true,
+                "bSelect": true,
+                "columns": [
+               { "data": "QAID", "bVisible": false },
+               { "data": "Question", "bSortable": false },
+               { "data": "QuestionHint" },
+            
+               {
+                   "sClass": "center-align-td",
+                   "mData": null,
+                   "bSortable": false,
+                   "mRender": function (data, type, row) {
+                       return '<button class="btn btn-success edit" data-id=' + row.QAID + ' data-QName=' + row.QuestionName  + '>' + '<i class=icon-pencil></i>' + '</button>&nbsp;<button class="btn btn-info delete" data-id=' + row.QAID + '>' + '<i class=icon-trash></i>' + '</button>';
+                   }
+               }
+                ],
+                "order": [4, "asc"]
+
+            });
+
+        }*@
+    $(document).ready(function () {
+        debugger;
+
+        GenerateDetailGrid();
+
+   });
+
+   
+
+</script>
+<script type="text/javascript">
+
+    $("#btnRefresh").click(function () {
+        ClearForm();
+    });
+
+    function ClearForm() {
+        $('#QuestionName').val('');
+     
+        $('#QAID').val(0);
+        $('#create').text('Create');
+    }
+
+    function OnSuccess(response) {
+        if (response == "1") {
+            alertify.success("Doctor Registered Successfully");
+            $('#create').text('Create');
+            var dt = $('#datatab').DataTable();
+            dt.ajax.reload();
+            ClearForm();
+        }
+        else if (response == "0") {
+            alertify.error("Unable To Register Doctor.");
+        }
+        else if (response == "2") {
+            alertify.error("Doctor Already Exist");
+        }
+        else {
+            alertify.error(response);
+        }
+
+    }
+
+    function OnFailure(response) {
+        if (response.status == 422) {
+            var errors = JSON.parse(response.responseText);
+            alertify.error(errors.errors);
+        }
+        else {
+            alertify.error(response);
+        }
+    }
+</script>

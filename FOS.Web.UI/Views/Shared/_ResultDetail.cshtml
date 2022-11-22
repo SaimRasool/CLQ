@@ -1,0 +1,57 @@
+﻿@model FOS.Shared.QAData
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN EXAMPLE TABLE widget-->
+        <div class="widget green">
+            <div class="widget-title">
+                <h4>View Detail</h4>
+                <span class="tools">
+                </span>
+            </div>
+            <div class="widget-body">
+                <div>
+                    <div class="clearfix">
+                        @if (Model != null&& Model.QADataList!=null)
+                        {
+                            foreach(var item in Model.QADataList)
+                            {
+                        <div class='container'>
+                            <div class='row' style='margin-left:30px'>
+                                <div class='col-lg-12 col-md-12 col-sm-12'>
+                                    <label style='display:unset!important;color:black' rows='2' cols='70' readonly>@item.Question</label>
+                                </div>
+                            </div>
+                            <div class='row radiobutton' style='margin-left:76px'>
+                                @if (item.RatedValue == -1)
+                                {
+                                    <div class='col-lg-1 col-md-1 col-sm-2 primary'><p>NA</p></div>
+                                }
+                                else if (item.RatedValue == 0)
+                                {
+                                    <div class='col-lg-1 col-md-1 col-sm-2 primary'><p>Fully Met</p></div>
+                                }
+                                else if (item.RatedValue == 1)
+                                {
+                                    <div class='col-lg-1 col-md-1 col-sm-2 primary'><p>Partially Met</p></div>
+                                }
+                                else if (item.RatedValue == 2)
+                                {
+                                    <div class='col-lg-1 col-md-1 col-sm-2'><p>Not Met</p></div>
+                                }
+
+                                <div class='col-lg-1 col-md-1 col-sm-2'><p>Remarks:</p></div>
+                                <label style='display:unset!important;color:black' rows='2' cols='70' readonly>@item.remarks</label>
+                            </div>
+                            <div class="btn-group pull-right"></div>
+                        </div>
+                        }}
+                        
+                        <div class="space15"></div>
+
+                    </div>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE widget-->
+    </div>
+</div>
+<!-- END EDITABLE TABLE widget-->

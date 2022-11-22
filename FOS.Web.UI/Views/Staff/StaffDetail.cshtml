@@ -1,0 +1,416 @@
+﻿@model FOS.Shared.StaffDetailData
+
+@{
+    ViewBag.Title = "Center";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!-- BEGIN PAGE HEADER-->
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN THEME CUSTOMIZER-->
+        <!-- END THEME CUSTOMIZER-->
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title"></h3>
+        <ul class="breadcrumb" style="background-color: #08c">
+            <li>
+                <a href="#">Admin</a>
+                <span class="divider">/</span>
+            </li>
+            <li>
+                <a href="#">Manage Staff Detail</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+@using (Ajax.BeginForm("AddUpdateSatffDetail", "Staff", new AjaxOptions { OnSuccess = "OnSuccess", OnFailure = "OnFailure" }, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true)
+
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN SAMPLE FORMPORTLET-->
+            <div class="widget green" style="">
+                <div class="widget-title">
+                    <h4>Manage Staff Detail</h4>
+                    <span class="tools">
+                    </span>
+                </div>
+                <div class="widget-body">
+                    <!-- BEGIN FORM-->
+                    <div class="form-horizontal">
+                        <div class="control-group">
+                            <label class="control-label">Select Region *</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(model => model.RegionID, new SelectList(Model.RegionsList, "ID", "Name"))
+                                @Html.ValidationMessageFor(model => model.RegionID)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Select Category *</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(model => model.CategoryID, new SelectList(Model.Category, "ID", "Name"))
+                                @Html.ValidationMessageFor(model => model.CategoryID)
+                            </div>
+                            <label class="control-label">Select Center *</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(model => model.CenterID, new SelectList(Model.Center, "ID", "Name"))
+                                @Html.ValidationMessageFor(model => model.CenterID)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Select Staff Type *</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(model => model.StaffTypeId, new SelectList(Model.StaffTypes, "ID", "Name"))
+                                @Html.ValidationMessageFor(model => model.StaffTypeId)
+                            </div>
+                            <label class="control-label">Select Sub Staff *</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(model => model.sub_staff_id, new SelectList(Model.StaffSubTypes, "ID", "Name"))
+                                @Html.ValidationMessageFor(model => model.sub_staff_id)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        <label class="control-label">Full Time</label>
+                        <div class="controls">
+                            @Html.EditorFor(model => model.full_time)
+                            @Html.HiddenFor(model => model.id)
+                            @Html.ValidationMessageFor(model => model.full_time)
+                        </div>
+                        <label class="control-label">Part Time</label>
+                        <div class="controls">
+                            @Html.EditorFor(model => model.part_time)
+                            @Html.ValidationMessageFor(model => model.part_time)
+                        </div>
+                        <label class="control-label">Visiting</label>
+                        <div class="controls">
+                            @Html.EditorFor(model => model.visiting)
+                            @Html.ValidationMessageFor(model => model.visiting)
+                        </div>
+                        <label class="control-label">Male</label>
+                        <div class="controls">
+                            @Html.EditorFor(model => model.male)
+                            @Html.ValidationMessageFor(model => model.male)
+                        </div>
+                        <label class="control-label">Fe Male</label>
+                        <div class="controls">
+                            @Html.EditorFor(model => model.female)
+                            @Html.ValidationMessageFor(model => model.female)
+                        </div>
+                    </div>
+                    <div class="control-group" style="border-top: 1px solid #e5e5e5;">
+                        <div class="form-actions" style="padding-left: 240px;">
+                            <button type="submit" id="btnNew" class="btn btn-primary">
+                                <i class="icon-ok icon-white" style="padding-right: 8px;"></i><span id="create">Create</span>
+                            </button>
+                            <button type="button" class="btn btn-small btn-info" id="btnRefresh"><i class="icon-ban-circle icon-white" style="padding-right: 8px;"></i>Reset</button>
+                        </div>
+                    </div>
+
+                    <!-- END FORM-->
+                </div>
+            </div>
+            <!-- END SAMPLE FORM PORTLET-->
+        </div>
+    </div>
+
+}
+<!-- BEGIN EDITABLE TABLE widget-->
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN EXAMPLE TABLE widget-->
+        <div class="widget green">
+            <div class="widget-title">
+                <h4>View Detail</h4>
+                <span class="tools">
+                </span>
+            </div>
+            <div class="widget-body">
+                <div>
+                    <div class="clearfix">
+                        <div class="btn-group pull-right"></div>
+                    </div>
+                    <div class="space15"></div>
+                 
+                    <table class="table table-striped table-hover table-bordered" id="datatab" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.id)
+                                </th>
+                                <th style="width: 14% !important">Sr #</th>
+
+                                <th style="width: 28% !important">
+                                    Department
+                                </th>
+                                <th style="width: 28% !important">
+                                    Staff Type
+                                </th>
+                                <th style="width: 28% !important">
+                                    Male
+                                </th>
+                                <th style="width: 28% !important">
+                                    Fe-Male
+                                </th>
+                                <th style="width: 28% !important">
+                                    Full Time
+                                </th> 
+                                <th style="width: 28% !important">
+                                    Part Time
+                                </th> 
+                                <th style="width: 28% !important">
+                                    Visiting
+                                </th>
+                                <th style="width: 10% !important">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE widget-->
+    </div>
+</div>
+<!-- END EDITABLE TABLE widget-->
+
+<script>
+        function LoadSubStaff() {
+        try {
+            var StaffTypeId = $("#StaffTypeId").val();
+            $.ajax({
+                type: "POST",
+                data: { StaffTypeId: StaffTypeId },
+                url: "@Url.Action("GetSubStaffDetail", "Staff")",
+                dataType: 'json',
+            success: function (json) {
+                var $el = $("#sub_staff_id");
+                $el.empty(); // remove old options
+                $.each(json, function (value, key) {
+
+                    $el.append($("<option></option>")
+                            .val(key.ID).text(key.Name));
+                });
+            }
+
+        });
+    } catch (e) {
+        alert(e);
+        //$('#datatab').dataTable().fnDestroy();
+    }
+
+    }
+       function LoadSubDepartment() {
+        try {
+            var RegionID = $("#RegionID").val();
+            var deptID = $("#CategoryID").val();
+            $.ajax({
+                type: "POST",
+                data: { DeptID: deptID, RegionID: RegionID },
+                url: "@Url.Action("GetSubDepartmentListByDeptAndRegionWise", "Admin")",
+                dataType: 'json',
+                success: function (json) {
+                    //  debugger;
+                    var $el = $("#CenterID");
+                    $el.empty(); // remove old options
+                    $.each(json, function (value, key) {
+
+                        $el.append($("<option></option>")
+                                .val(key.ID).text(key.Name));
+                    });
+                }
+            });
+        } catch (e) {
+            $('#datatab').dataTable().fnDestroy();
+        }
+    }
+    $("#RegionID").change(function () {
+        // debugger;
+        LoadSubDepartment();
+       // LoadCenterDepartment();
+    });
+    $("#CategoryID").change(function () {
+        LoadSubDepartment();
+    });
+    $("#StaffTypeId").change(function () {
+        LoadSubStaff();
+    });
+
+       function GenerateDetailGrid() {
+        var oTable = $('#datatab').DataTable({
+            "aLengthMenu": [[10, 25, 50, 75, 100], [10, 25, 50, 75, 100]],
+            "iDisplayLength": 10,
+            "paging": true,
+            "pagingType": "full_numbers",
+            "serverSide": true,
+            "bRetrieve": true,
+            "bDestroy": true,
+            "autoWidth": true,
+            "ajax": {
+                "type": "POST",
+                "url": '@Url.Action("StaffDataHandler", "Staff")',
+                "contentType": 'application/json; charset=utf-8',
+                'data': function (data) {
+                    data.ID = $('#ID').val();
+                    return data = JSON.stringify(data);
+                },
+
+            },
+            "fnDrawCallback": function (osetting) {
+                var UpdateCheck = "0";
+                var DeleteCheck = "0";
+                if (UpdateCheck == "@HttpContext.Current.Session["UpdateCheck"]") { $(".edit").css("display", "none"); }
+                else {
+                    $(".edit").on("click", function () {
+                        ClearForm();
+                        $('#ID').val($(this).attr("data-id"));
+                        $('#create').text('Update');
+                        $('#female').val($(this).attr("data-female"));
+                        $('#male').val($(this).attr("data-male"));
+                        $('#full_time').val($(this).attr("data-full_time"));
+                        $('#part_time').val($(this).attr("data-part_time"));
+                        $('#visiting').val($(this).attr("data-visiting"));
+                        $('html, body').animate({
+                            scrollTop: $("#main-content").offset().top
+                        }, 500);
+                        $("#Observation").focus();
+
+                    });
+                }
+
+                if (UpdateCheck == "@HttpContext.Current.Session["DeleteCheck"]") { $(".delete").css("display", "none"); }
+                else {
+                    $(".delete").on("click", function () {
+                        var id = $(this).attr("data-id");
+                        // confirm dialog
+                        alertify.confirm("Are You Sure You Want To Delete This Record ?  ", function (e) {
+                            if (e) {
+
+                                $.ajax({
+                                    type: "POST",
+                                    url: "@Url.Action("DeleteStaffDetail", "Staff")",
+                                    data: { id: id },
+                                    success: function (data) {
+
+                                        if (data == "0") {
+                                            alertify.success('Record Deleted Successfully');
+                                            var table = $('#datatab').DataTable();
+                                            table.row(this).remove().draw(false);
+                                        }
+
+                                        else { alertify.error('Not Deleted'); }
+                                    }
+
+                                });
+
+                            } else { }
+                        });
+
+                    });
+                }
+            },
+
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:first", nRow).html(iDisplayIndex + 1);
+                return nRow;
+            },
+            "oLanguage": { "sSearch": "Search Category : " },
+            "sDom": 'lftipr',
+            "processing": true,
+            "deferRender": true,
+            "bSelect": true,
+            "columns": [
+           { "data": "id", "bVisible": false },
+                { "data": "SubDeptName", "bSortable": false },
+                { "data": "SubDeptName" },
+                { "data": "Name" },
+                { "data": "male" },
+                { "data": "female" },
+                { "data": "full_time" },
+                { "data": "part_time" },
+                { "data": "visiting" },
+
+           {
+               "sClass": "center-align-td",
+               "mData": null,
+               "bSortable": false,
+               "mRender": function (data, type, row) {
+                   return '<button class="btn btn-success edit" data-id=' + row.id + ' data-male=' + '"' + row.male + '"' + ' data-female=' + '"' + row.female + '"' + ' data-full_time=' + '"' + row.full_time + '"' + ' data-part_time=' + '"' + row.part_time + '"' + ' data-visiting=' + '"' + row.visiting + '"'+ '>'+ '<i class=icon-pencil></i>' + '</button>&nbsp;<button class="btn btn-info delete" data-id=' + row.id + '>' + '<i class=icon-trash></i>' + '</button>';
+               }
+           }
+            ],
+            "order": [3, "asc"]
+
+        });
+
+    }
+    $(document).ready(function () {
+
+        $("#liSetup,#liRegion").addClass("active");
+
+        var WriteCheck = "0";
+
+        if (WriteCheck == "@HttpContext.Current.Session["WriteCheck"]") {
+            // $("#btnNew").css("display", "none");
+            $("#btnNew").attr("disabled", true);
+        }
+        else {
+        }
+
+        $("#btnRefresh").click(function () {
+            ClearForm();
+        });
+        GenerateDetailGrid();
+    });
+</script>
+<script type="text/javascript">
+
+    function ClearForm() {
+        $('#female').val('');
+        $('#male').val('');
+        $('#CenterID').val('');
+        $('#sub_staff_id').val('');
+        $('#full_time').val('');
+        $('#part_time').val('');
+        $('#visiting').val('');
+        $('#id').val(0);
+        $('#create').text('Create');
+    }
+
+    function OnSuccess(response) {
+        if (response == "1") {
+            alertify.success("Satff Detail Saved Successfully");
+            $('#create').text('Create');
+            //var dt = $('#datatab').DataTable();
+            //dt.ajax.reload();
+            ClearForm();
+        }
+        else if (response == "0") {
+            alertify.error("Unable To Save Staff Detail.");
+        }
+        else if (response == "2") {
+            alertify.error("Staff Code Already Exist");
+        }
+        else {
+            alertify.error(response);
+        }
+
+    }
+
+    function OnFailure(response) {
+        if (response.status == 422) {
+            var errors = JSON.parse(response.responseText);
+            alertify.error(errors.errors);
+        }
+        else {
+            alertify.error(response);
+        }
+    }
+</script>

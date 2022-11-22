@@ -1,0 +1,368 @@
+﻿@model FOS.DataLayer.Audit
+
+@{
+    ViewBag.Title = "Aduit Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- BEGIN PAGE HEADER-->
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN THEME CUSTOMIZER-->
+        <!-- END THEME CUSTOMIZER-->
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title"></h3>
+        <ul class="breadcrumb" style="background-color: #08c">
+            <li>
+                <a href="../Admin/Dashboard">Admin</a>
+                <span class="divider">/</span>
+            </li>
+            <li>
+                <a href="../Audit/CreateAudit">Manage Audit Profile</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+@using (Ajax.BeginForm("AddUpdateAudit", "Audit", new AjaxOptions { OnSuccess = "OnSuccess", OnFailure = "OnFailure" }, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true)
+
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN SAMPLE FORMPORTLET-->
+            <div class="widget green" style="">
+                <div class="widget-title">
+                    <h4>Manage Audit Profile</h4>
+                    <span class="tools">
+                    </span>
+                </div>
+                <div class="widget-body">
+                    <!-- BEGIN FORM-->
+                    <div class="control-group">
+                        <label class="control-label">Audit *</label>
+                        <div class="controls">
+                            <select id='audit_year' name='audit_year' class="custom-select"></select>
+                            @Html.HiddenFor(model => model.audit_id)
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Description *</label>
+                        <div class="controls">
+                            @Html.TextAreaFor(model => model.description, new { @class = "form-control", @required = true })
+                            @Html.ValidationMessageFor(model => model.description)
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Starting Date *</label>
+                        <div class="controls">
+                            @Html.TextBoxFor(m => m.starting_date, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", @style = "text-align: center" })
+                            @Html.ValidationMessageFor(model => model.starting_date)
+                        </div>
+                    </div>
+                    <div class="control-group" style="border-top: 1px solid #e5e5e5;">
+                        <div class="form-actions" style="padding-left: 240px;">
+                            <button type="submit" id="btnNew" class="btn btn-primary">
+                                <i class="icon-ok icon-white" style="padding-right: 8px;"></i><span id="create">Create</span>
+                            </button>
+                            <button type="button" class="btn btn-small btn-info" id="btnRefresh"><i class="icon-ban-circle icon-white" style="padding-right: 8px;"></i>Reset</button>
+                        </div>
+                    </div>
+
+                    <!-- END FORM-->
+                </div>
+            </div>
+            <!-- END SAMPLE FORM PORTLET-->
+        </div>
+    </div>
+
+}
+<!-- BEGIN EDITABLE TABLE widget-->
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN EXAMPLE TABLE widget-->
+        <div class="widget green">
+            <div class="widget-title">
+                <h4>View Detail</h4>
+                <span class="tools">
+                </span>
+            </div>
+            <div class="widget-body">
+                <div>
+                    <div class="clearfix">
+                        <div class="btn-group pull-right"></div>
+                    </div>
+                    <div class="space15"></div>
+                    <table class="table table-striped table-hover table-bordered" id="datatab" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.audit_id)
+                                </th>
+                                <th style="width: 15% !important">Sr #</th>
+                                <th style="width: 15% !important">
+                                    Audit Year
+                                </th>
+                                <th style="width: 8% !important">
+                                    Status
+                                </th>
+                                <th style="width: 8% !important">
+                                    Starting Date
+                                </th>
+                                <th style="width: 8% !important">
+                                    Closing Date
+                                </th>
+                                <th style="width: 8% !important">
+                                    Description
+                                </th>
+                                <th style="width: 10% !important">Actions</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE widget-->
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+        var WriteCheck = "0";
+
+        if (WriteCheck == "@HttpContext.Current.Session["WriteCheck"]") {
+            // $("#btnNew").css("display", "none");
+            $("#btnNew").attr("disabled", true);
+        }
+        else {
+        }
+        let dateDropdown = document.getElementById('audit_year');
+
+        let currentYear = new Date().getFullYear();
+        let earliestYear = 2000;
+        while (currentYear >= earliestYear) {
+            let dateOption = document.createElement('option');
+            dateOption.text = currentYear;
+            dateOption.value = currentYear;
+            dateDropdown.add(dateOption);
+            currentYear -= 1;
+        }
+
+        $("#btnRefresh").click(function () {
+            ClearForm();
+        });
+
+        GenerateDetailGrid();
+
+        function GenerateDetailGrid() {
+            var oTable = $('#datatab').DataTable({
+                "aLengthMenu": [[10, 25, 50, 75, 100], [10, 25, 50, 75, 100]],
+                "iDisplayLength": 10,
+                "paging": true,
+                "pagingType": "full_numbers",
+                "serverSide": true,
+                "bRetrieve": true,
+                "bDestroy": true,
+                "autoWidth": true,
+                "ajax": {
+                    "type": "POST",
+                    "url": '@Url.Action("AuditDataHandler", "Audit")',
+                    "contentType": 'application/json; charset=utf-8',
+                    'data': function (data) {
+                        data.ID = $('#ID').val();
+                        return data = JSON.stringify(data);
+                    },
+
+                },
+                "fnDrawCallback": function (osetting) {
+                    var UpdateCheck = "0";
+                    var DeleteCheck = "0";
+                    if (UpdateCheck == "@HttpContext.Current.Session["UpdateCheck"]") { $(".edit").css("display", "none"); }
+                    else {
+                        $(".edit").on("click", function () {
+                            ClearForm();
+
+                            $('#audit_id').val($(this).attr("data-id"));
+                            $('#create').text('Update');
+                            $("#audit_year").val($(this).attr("data-audit_year"));
+                           // $("#starting_date").val($(this).attr("data-starting_date"));
+                            $("#description").val($(this).attr("data-description"));
+
+
+                            $('html, body').animate({
+                                scrollTop: $("#main-content").offset().top
+                            }, 500);
+                            $("#audit_year").focus();
+
+                        });
+                    }
+
+                    if (UpdateCheck == "@HttpContext.Current.Session["DeleteCheck"]") { $(".delete").css("display", "none"); }
+                    else {
+                        $(".delete").on("click", function () {
+                            var audit_id = $(this).attr("data-id");
+                            // confirm dialog
+                            alertify.confirm("Are You Sure You Want To Delete This Record ?  ", function (e) {
+                                if (e) {
+
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "@Url.Action("DeleteAudit", "Audit")",
+                                        data: { audit_id: audit_id },
+                                        success: function (data) {
+
+                                            if (data == "0") {
+                                                alertify.success('Record Deleted Successfully');
+                                                var table = $('#datatab').DataTable();
+                                                table.row(this).remove().draw(false);
+                                            }
+
+                                            else { alertify.error('Not Deleted'); }
+                                        }
+
+                                    });
+
+                                } else { }
+                            });
+
+                        });
+                        $(".updateStatus").on("click", function () {
+                            var audit_id = $(this).attr("data-id");
+                            // confirm dialog
+                            alertify.confirm("Are You Sure You Want To Close This Audit?  ", function (e) {
+                                if (e) {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "@Url.Action("UpdateAudit", "Audit")",
+                                        data: { audit_id: audit_id },
+                                        success: function (data) {
+
+                                            if (data == "0") {
+                                                alertify.success('Audit Closed Successfully');
+                                                var table = $('#datatab').DataTable();
+                                                table.row(this).remove().draw(false);
+                                            }
+
+                                            else { alertify.error('Not Closed'); }
+                                        }
+
+                                    });
+
+                                } else { }
+                            });
+
+                        });
+                    }
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $("td:first", nRow).html(iDisplayIndex + 1);
+                    return nRow;
+                },
+                "oLanguage": { "sSearch": "Search Category : " },
+                "sDom": 'lftipr',
+                "processing": true,
+                "deferRender": true,
+                "bSelect": true,
+                "columns": [
+                    { "data": "audit_id", "bVisible": false },
+                    { "data": "audit_year", "bSortable": false },
+                    { "data": "audit_year", },
+                    {
+                        "data": "is_active", "name": "is_active", "autoWidth": true,
+                        "render": function (data, type, full, meta) {
+                            if (data === false)
+                                return '<div class="bg-gradient-primary text-white text-center p-2">Close</div >';
+                            else if (data === true)
+                                return '<div class="bg-gradient-warning text-white text-center p-2">Active</div >';
+                            else
+                                return "";
+                        }
+                    },
+                        {
+                            "data": "starting_date", "type": "date ", "className": "text-center",
+                            "render": function (value) {
+                                if (value === null) return "";
+                                var pattern = /Date\(([^)]+)\)/;//date format from server side
+                                var results = pattern.exec(value);
+                                var dt = new Date(parseFloat(results[1]));
+
+                                return dt.getDate() + "/" + (dt.getMonth() + 1) + "/" + dt.getFullYear();
+                            }, "autoWidth": true
+                        },
+                            {
+                                "data": "closing_date", "type": "date ", "className": "text-center",
+                                "render": function (value) {
+                                    if (value === null) return "";
+                                    var pattern = /Date\(([^)]+)\)/;//date format from server side
+                                    var results = pattern.exec(value);
+                                    var dt = new Date(parseFloat(results[1]));
+
+                                    return dt.getDate() + "/" + (dt.getMonth() + 1) + "/" + dt.getFullYear();
+                                }, "autoWidth": true
+                            },
+                    { "data": "description" },
+
+               {
+                   "sClass": "center-align-td",
+                   "mData": null,
+                   "bSortable": false,
+                   "mRender": function (data, type, row) {
+                       if (row.is_active === true)
+                           return '<button class="btn btn-success edit" data-id=' + row.audit_id + ' data-audit_year=' + '"' + row.audit_year + '"' + ' data-description=' + '"' + row.description + '"' + '>' + '<i class=icon-pencil></i>' + '</button>&nbsp;<button class="btn btn-info delete" data-id=' + row.audit_id + '>' + '<i class=icon-trash></i>' + '</button>&nbsp;<button class="btn btn-info updateStatus" data-id=' + row.audit_id + '>' + '<i class=icon-warning-sign></i>' + '</button>';
+                       else
+                           return '';
+                   }
+               }
+                ],
+                "order": [3, "asc"]
+
+            });
+
+        }
+    });
+
+</script>
+
+<script type="text/javascript">
+
+    function ClearForm() {
+        $('#audit_id').val('');
+        $('#description').val('');
+        $('#audit_year').val('');
+        $('#starting_date').val('');
+    }
+
+    function OnSuccess(response) {
+        if (response == "1") {
+            alertify.success("Audit Created Successfully");
+            $('#create').text('Create');
+            var dt = $('#datatab').DataTable();
+            dt.ajax.reload();
+            ClearForm();
+        }
+        else if (response == "0") {
+            alertify.error("Unable To Create Audit.");
+        }
+        else if (response == "2") {
+            alertify.error("Audit Code Already Exist");
+        }
+        else {
+            alertify.error(response);
+        }
+
+    }
+
+    function OnFailure(response) {
+        if (response.status == 422) {
+            var errors = JSON.parse(response.responseText);
+            alertify.error(errors.errors);
+        }
+        else {
+            alertify.error(response);
+        }
+    }
+</script>
+

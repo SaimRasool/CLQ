@@ -1,0 +1,114 @@
+﻿@model FOS.DataLayer.AuditComponent
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div>
+        <h4>AuditComponent</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.AuditDate)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.AuditDate)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.AuditTime)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.AuditTime)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.AuditerName)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.AuditerName)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.InstitutionAddress)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.InstitutionAddress)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.PhoneNo)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.PhoneNo)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.FaxNo)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.FaxNo)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.InstitutionHead)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.InstitutionHead)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.HeadPhoneNo)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.HeadPhoneNo)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Department.Name)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Department.Name)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.SubDepartment.Name)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.SubDepartment.Name)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</body>
+</html>

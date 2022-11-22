@@ -1,0 +1,455 @@
+﻿@model FOS.Shared.QAData
+
+@{
+    ViewBag.Title = "Questions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- BEGIN PAGE HEADER-->
+
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN THEME CUSTOMIZER-->
+        <!-- END THEME CUSTOMIZER-->
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title"></h3>
+        <ul class="breadcrumb" style="background-color: #08c">
+            <li>
+                <a href="#">Admin</a>
+                <span class="divider">/</span>
+            </li>
+            <li>
+                <a href="#">Manage Question Rating</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<div style="width:100% !important; float:left; ">
+    @using (Ajax.BeginForm("AddUpdateDepartment", "Admin", new AjaxOptions { OnSuccess = "OnSuccess", OnFailure = "OnFailure" }, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.ValidationSummary(true)
+
+        <div class="row-fluid">
+            <div class="container-fluid">
+                <div class="span12">
+                    <!-- BEGIN SAMPLE FORMPORTLET-->
+                    <div class="widget green" style="">
+                        <div class="widget-title">
+                            <h4>Manage Question Rating</h4>
+                            <span class="tools">
+                                @Html.HiddenFor(model => model.audit_id)
+                                @Html.TextBoxFor(model => model.AuditYear, new { @class = "form-control", @readonly=true,@disabled="disabled"})
+                            </span>
+                        </div>
+                        <div class="widget-body">
+                            <!-- BEGIN FORM-->
+                            <div class="control-group">
+                                <label class="control-label">Select Region *</label>
+                                <div class="controls">
+                                    @Html.DropDownListFor(model => model.RegionID, new SelectList(Model.RegionsList, "ID", "Name"))
+                                    @Html.ValidationMessageFor(model => model.RegionID)
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Select Category *</label>
+                                <div class="controls">
+                                    @Html.DropDownListFor(model => model.DeptID, new SelectList(Model.Dept, "ID", "Name"), new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Select Center *</label>
+                                <div class="controls">
+                                    @Html.DropDownListFor(model => model.SubDeptID, new SelectList(Model.SubDept, "ID", "SubDepartment"), new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.DeptID)
+                                    @Html.HiddenFor(model => model.QAID)
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Select Department *</label>
+                                <div class="controls">
+                                    @Html.DropDownListFor(model => model.CenterDeptID, new SelectList(Model.CenterDept, "ID", "Name"), new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.CenterDeptID)
+                                </div>
+                            </div>
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                    <!-- END SAMPLE FORM PORTLET-->
+                </div>
+            </div>
+            <div class="row" style="margin-left: 0px;margin-top: 20px;">
+                <div class="span12">
+                    @*<input type="checkbox" id="cbSelectAll" style="margin: -3px 0 0;" /><span style="padding-left: 7px; font-weight: bold; color: #bb000c">Select All</span>*@
+                    <div id="forms_ul" style="font-size: 12px;">
+                        @*<ul class="nav nav-list tree" id="forms_ul" style="font-size: 12px;"></ul>*@
+                    </div>
+                </div>
+
+            </div>
+            <div class="row" style="margin-left: 0px;margin-top: 20px;">
+
+                @*<input type="file" id="FileUpload1" />*@
+                <div class="form-actions" style="float: right;padding-right: 15px;margin-top: -10px;border-top:0px;background:none">
+                    <button type="submit" class="btn btn-small btn-success" id="btnSubmit"><i class="icon-ok icon-white" style="padding-right:8px"></i><span id="create">Create</span></button>
+                    <button type="button" class="btn btn-small btn-inverse" id="btnRefresh"><i class="icon-ban-circle icon-white" style="padding-right:8px"></i>Reset</button>
+                </div>
+                <div class="form-actions" style="float:left;padding-right: 15px;margin-top: -10px;border-top:0px;background:none">
+                    @*<label>Total Marks: @Session["TotalNumber"] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Obtained Marks: @Session["ObtainedMarks"]</label>*@
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <h4 class="modal-title" id="myModalLabel">Question</h4>
+            <div class="modal-body"><p id="QuestionP"></p></div>
+            <h4 class="modal-title" id="myModalLabel">Question Hint</h4>
+            <div class="modal-body"><p id="hintP"></p></div>
+        </div>
+    </div>
+</div>
+
+
+<!-- BEGIN EDITABLE TABLE widget-->
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN EXAMPLE TABLE widget-->
+        <div class="widget green">
+            <div class="widget-title">
+                <h4>View Detail</h4>
+                <span class="tools">
+                </span>
+            </div>
+            <div class="widget-body">
+                <div>
+                    <div class="clearfix">
+                        <div class="btn-group pull-right"></div>
+                    </div>
+                    <div class="space15"></div>
+                    <div id="webcam"></div>
+                </div>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE widget-->
+    </div>
+</div>
+<!-- END EDITABLE TABLE widget-->
+<script src="~/Scripts/WebCam.js"></script>
+<script>
+    // <input type='button' id='btnCapture' data-id='" + d.RID + "' value='Capture'/>
+    //$(function () {
+    //    Webcam.set({
+    //        width: 320,
+    //        height: 240,
+    //        image_format: 'jpeg',
+    //        jpeg_quality: 90
+    //    });
+    //    $("#btnCapture").click(function () {
+    //        Webcam.attach('#webcam');
+ 
+    //        var ID =this.attr("data-id");
+    //        Webcam.snap(function (data_uri) {
+    //            $("#imgCapture" + ID)[0].src = data_uri;
+    //        });
+    //    });  
+    //});
+
+    function loadImage(event) {
+        var ID = $(event).attr("data-id");
+        if (event.files && event.files[0]) {
+            if (!event.files[0].name.includes("gif") && !event.files[0].name.includes("png")
+            && !event.files[0].name.includes("jpg") && !event.files[0].name.includes("jpeg")) {
+                alert("Invalid file selected, only gif/png/jpg/jpeg files are allowed.");
+                return false;
+            }
+
+            if (event.files[0].size > 1000000) {//30740(30KB)
+               alert("Invalid file size, file size should be less than 1 MB");
+                return false;
+            }
+            var reader = new FileReader();
+            reader.readAsDataURL(event.files[0]);
+            reader.onload = function (e) {
+                $('#outputImage' + ID).attr('src', e.target.result);
+                $("input[name=ImagePath" + ID + "]").val(e.target.result);
+                
+            }
+            $("input[name=ImageName" + ID + "]").val(event.files[0].name);
+
+        }
+    };
+
+
+
+                var ID = $(this).attr("data-id");
+                $("#btnSubmit").click(function () {
+                    var RolePages = [];
+                    var Actions = [];
+                    $("input[name=page]:checked").each(function () {
+                        var a = [];
+                        if ($(this).attr('data-id') != "") {
+                            var ID = $(this).attr("data-id");
+                            var One = $(this).attr("data-one");
+                            var RatedValue = "";
+                            $("input[name=action" + ID + "]:checked").each(function () {
+                                RatedValue = $(this).val();
+                                var RTValue = RatedValue;
+                                var QRID = ID;
+                                var remarks = $("textarea[name=remarks" + ID + "]").val();
+                                var ImagePath = $("input[name=ImagePath" + ID + "]").val();
+                                var ImageName = $("input[name=ImageName" + ID + "]").val();
+                                var CategoryID = $("#DeptID").val();
+                                var CenterID = $("#SubDeptID").val();
+                                var DeptID = $("#CenterDeptID").val();
+                                var audit_id = $("#audit_id").val();
+                                //if (RTValue == "") {
+                                //    alertify.error("Please Select All Question Checks!.");
+                                //    return false;
+                                //}
+                                //else {
+                                a.push(QRID);
+                                a.push(RTValue);
+                                a.push(CategoryID);
+                                a.push(CenterID);
+                                a.push(DeptID);
+                                a.push(remarks);
+                                a.push(ImagePath);
+                                a.push(ImageName);
+                                a.push(audit_id);
+                                $("input[name=page]").prop("checked", false);
+                                $("input[name=action" + ID + "]").prop("disabled", true);
+                                //}
+
+                            });
+                        }
+                        PageAction.push({
+                            Page: $(this).attr("data-id"),
+                            QRID: a[0],
+                            RatedValue: a[1],
+                            CategoryID: a[2],
+                            CenterID: a[3],
+                            DeptID: a[4],
+                            remarks: a[5],
+                            ImagePath: a[6],
+                            ImageName: a[7],
+                            audit_id: a[8],
+                        });
+                    });
+
+                    if (PageAction.length > 0) {
+
+                        $("#btnSubmit").prop('disabled', true);
+                        try {
+                            var AuditYear = $("#AuditYear").val();
+                            if (window.FormData !== undefined && (AuditYear !== '' || AuditYear !== "")) {
+                                        $.ajax({
+                                            type: "POST",
+                                            data:
+                                                JSON.stringify({
+                                                    PageActions: PageAction
+                                                }),
+
+                                            url: "@Url.Action("AddRatedNumber", "Admin")",
+                                            dataType: 'json',
+                                            contentType: 'application/json',
+                                            success: function (json) {
+                                                PageAction = [];
+                                                $("#FileUpload1").val("");
+                                                $("#ObtainedMarks").text("");
+                                                $("#ObtainedMarksP").text("");
+                                                $("#TotalM").text("");
+                                                $("#NAQ").text("");
+                                                $("#ObtainedMarks").text("Partially Met: " + json.OM);
+                                                $("#ObtainedMarksP").text("Not Met: " + json.OMP );
+                                                $("#NAQ").text("Not Applicable: " + json.NA);
+                                                $("#TotalM").text("Fully Met: " + json.TM);
+                                                alertify.success("Successfully Submitted");
+                                                $("#btnSubmit").prop('disabled', false);
+                                            }
+                                        });                
+                            } else {
+                                alert("Audit Profile Not Exist Or FormData is not supported.");
+                            }
+                        } catch (e) {
+                        }
+
+                    }
+
+                });
+                function LoadPagesActionData() {
+                    $.ajax({
+                        url: "@Url.Action("GetPagesActionData", "AdminPanel")",
+                        cache: false,
+                        type: "POST",
+                        success: function (data) {
+                            PageAction = data;
+                        }
+                    });
+                }
+                function LoadSubDepartment() {
+                    try {
+                        var deptID = $("#DeptID").val();
+                        var RegionID = $("#RegionID").val();
+
+                        $.ajax({
+                            type: "POST",
+                            data: { DeptID: deptID, RegionID: RegionID },
+                            url: "@Url.Action("GetSubDepartmentListByDeptAndRegionWise", "Admin")",
+                            dataType: 'json',
+                            success: function (json) {
+                                var $el = $("#SubDeptID");
+                                $el.empty(); // remove old options
+                                $.each(json, function (value, key) {
+
+                                    $el.append($("<option></option>")
+                                            .val(key.ID).text(key.Name));
+                                });
+
+                            }
+
+                        });
+                    } catch (e) {
+                        //alert(e);
+                        $('#datatab').dataTable().fnDestroy();
+                    }
+
+    }
+    $("#RegionID").change(function () {
+        // debugger;
+        LoadSubDepartment();
+        LoadCenterDepartment();
+    });
+                $("#DeptID").change(function () {
+                    LoadSubDepartment();
+                    LoadCenterDepartment();
+                });
+                function LoadCenterDepartment() {
+                    try {
+                        var deptID = $("#DeptID").val();
+
+                        $.ajax({
+                            type: "POST",
+                            data: { CategoryID: deptID },
+                            url: "@Url.Action("GetCenterDepartmentListByDeptWise", "Admin")",
+                            dataType: 'json',
+                            success: function (json) {
+                                var $el = $("#CenterDeptID");
+                                $el.empty(); // remove old options
+                                $.each(json, function (value, key) {
+
+                                    $el.append($("<option></option>")
+                                            .val(key.ID).text(key.Name));
+                                });
+                            }
+
+                        });
+                    } catch (e) {
+                        $('#datatab').dataTable().fnDestroy();
+                    }
+
+                }
+                $("#cbSelectAll").click(function () {
+
+                    $("input[name=page]").not(this).prop('checked', this.checked);
+                });
+                function GetHint(ID) {
+                    var hintID = ID;
+                    $.ajax({
+                        type: "POST",
+                        data: { ID: hintID },
+                        url: "@Url.Action("GetQHint", "Admin")",
+                        cache: false,
+                        success: function (json) {
+                            $("#QuestionP").text(json.QuestionName);
+                            $("#hintP").text(json.QuestionHint);
+                            $('#myModal').modal('show');
+                        }
+                    });
+                }            
+                function LoadQA() {
+                    try {
+                        var CenterID = $("#SubDeptID").val();
+                        var CategoryID = $("#DeptID").val();
+                        var DeptID = $("#CenterDeptID").val();
+                        var audit_id = $("#audit_id").val();
+
+                        $.ajax({
+                            type: "POST",
+                            data: { CategoryID: CategoryID, CenterID: CenterID, DeptID: DeptID, audit_id: audit_id },
+                            url: "@Url.Action("GetQAList", "Admin")",
+                            cache: false,
+                            success: function (json) {
+                                $("#ObtainedMarks").text("");
+                                $("#ObtainedMarksP").text("");
+                                $("#TotalM").text("");
+                                $("#NAQ").text("");
+                                var TotalMarks = json.TM;
+                                $("#forms_ul").empty();
+                                $("#forms_ul").append(json);
+                            }
+                        });
+                    } catch (e) {
+                    }
+    }
+
+                $("#CenterDeptID").change(function () {
+                    LoadQA();
+                });
+                $(document).ready(function () {
+                    $("#btnSubmit").prop('disabled', false);
+                    var ID = $(this).attr("data-id");
+                    var PageAction = null;
+                    $('#info').hide();
+                    LoadPagesActionData();
+                    $("#liSetup,#liRegion").addClass("active");
+                    var WriteCheck = "0";
+                    if (WriteCheck == "@HttpContext.Current.Session["WriteCheck"]") {
+                        $("#btnNew").attr("disabled", true);
+                    }
+                    else {
+                    }
+                    $("#btnRefresh").click(function () {
+                        ClearForm();
+                    });
+                });
+</script>
+<script type="text/javascript">
+
+                function ClearForm() {
+                    $('#Name').val('');
+                    $('#ShortCode').val('');
+                    $('#ID').val(0);
+                    $('#create').text('Create');
+                }
+
+                function OnSuccess(response) {
+                    if (response == "1") {
+                        alertify.success("Department Saved Successfully");
+                        $('#create').text('Create');
+                        var dt = $('#datatab').DataTable();
+                        dt.ajax.reload();
+                        ClearForm();
+                    }
+                    else if (response == "0") {
+                        alertify.error("Unable To Save Department.");
+                    }
+                    else if (response == "2") {
+                        alertify.error("Department Code Already Exist");
+                    }
+
+
+                }
+
+
+</script>

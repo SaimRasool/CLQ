@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d4a37a8cf060422ba4d16447284c293e" Name="Diagram1" ZoomLevel="64">
+        <EntityTypeShape EntityType="FOS_WallCoatModel.AccessLog" Width="1.5" PointX="8.5" PointY="5.875" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Area" Width="1.5" PointX="10.25" PointY="25.5" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.AuditComponent" Width="1.5" PointX="12" PointY="2.75" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.AuditComponentDetail" Width="1.5" PointX="10.125" PointY="2.5" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.CenterDepartment" Width="1.5" PointX="5.125" PointY="0.625" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.City" Width="1.5" PointX="4.25" PointY="7.5" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Dealer" Width="1.5" PointX="10.25" PointY="15.5" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Department" Width="1.5" PointX="10.25" PointY="6" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Designation" Width="1.5" PointX="4.75" PointY="3.625" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.EmpDepartment" Width="1.5" PointX="6.625" PointY="0.625" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Employee" Width="1.5" PointX="15.375" PointY="3.875" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.FeeStructure" Width="1.5" PointX="10.25" PointY="22" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.ImagesTable" Width="1.5" PointX="6.625" PointY="3.125" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Job" Width="1.5" PointX="7.5" PointY="15" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.LoginHistory" Width="1.5" PointX="8.375" PointY="0.5" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.MainCategory" Width="1.5" PointX="14.75" PointY="7.125" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Page" Width="1.5" PointX="1" PointY="0.5" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.QA" Width="1.5" PointX="2.875" PointY="5.875" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.RatedNumber" Width="1.5" PointX="16.375" PointY="0.5" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.RegionalHead" Width="1.5" PointX="3" PointY="16" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.RegionalHeadsType" Width="1.5" PointX="0.75" PointY="17.25" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Region" Width="1.5" PointX="5.75" PointY="10.625" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Retailer" Width="1.5" PointX="12.5" PointY="11" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.RolePage" Width="1.5" PointX="3.125" PointY="0.625" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Role" Width="1.5" PointX="3" PointY="3.875" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.SaleOfficer" Width="1.5" PointX="5.25" PointY="15.375" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.StaffSubType" Width="1.5" PointX="11.875" PointY="0.5" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.StaffType" Width="1.5" PointX="10.125" PointY="0.5" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.SubCategory" Width="1.5" PointX="17" PointY="7.125" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.SubCtegoryA" Width="1.5" PointX="19.25" PointY="7" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.SubDepartment" Width="1.5" PointX="13.625" PointY="0.5" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Sylabu" Width="1.5" PointX="10.25" PointY="11.125" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.TblReminder" Width="1.5" PointX="14.75" PointY="16" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.TempRatedNumber" Width="1.5" PointX="13.625" PointY="4.375" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Todo" Width="1.5" PointX="5.25" PointY="34.75" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Token" Width="1.5" PointX="9.75" PointY="4.75" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.TokenDetail" Width="1.5" PointX="18.75" PointY="15.75" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.User" Width="1.5" PointX="1" PointY="4.5" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.VisitLog" Width="1.5" PointX="16.75" PointY="18.75" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.VisitPlan" Width="1.5" PointX="5.25" PointY="22.25" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Zone" Width="1.5" PointX="10.25" PointY="7.625" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_AccessLog_SaleOfficers" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Areas_Cities" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Retailers_Areas" />
+        <AssociationConnector Association="FOS_WallCoatModel.AuditComponent_FK_Department" />
+        <AssociationConnector Association="FOS_WallCoatModel.AuditComponent_FK_SubDepartment" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK__AuditComp__Compo__0682EC34" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK__AuditComp__Staff__0777106D" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK__AuditComp__Staff__086B34A6" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Dealers_Cities" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Retailers_Cities" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_SaleOfficers_Cities" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Dealers_RegionalHeads" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Retailers_Dealers" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Retailers_FeeStructure" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Jobs_RegionalHeads" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Jobs_SaleOfficers" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Jobs_VisitPlans" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_TblReminders_Jobs" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_SubCategory_MainCategory" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_SubCtegoryA_MainCategory" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Pages_Pages" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_RolePages_Pages" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_RegionalHeads_RegionalHeadsType" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_SaleOfficers_RegionalHeads" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Todo_RegionalHeads" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Retailers_SaleOfficers" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Retailers_Sylabus" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_Retailers_Zone" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_TblReminders_Retailers" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_RolePages_Roles" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_TblReminders_SaleOfficers" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK__StaffSubT__Staff__03A67F89" />
+        <AssociationConnector Association="FOS_WallCoatModel.FK_SubCtegoryA_SubCategory" />
+        <AssociationConnector Association="FOS_WallCoatModel.UserRoles" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.staff_detail" Width="1.5" PointX="8.375" PointY="3.125" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Regions" Width="1.5" PointX="6.625" PointY="5.75" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Observation" Width="1.5" PointX="0.75" PointY="9.75" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Audit" Width="1.5" PointX="7.375" PointY="9.75" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.Approvel" Width="1.5" PointX="9.375" PointY="9.75" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.ComplianceReport" Width="1.5" PointX="3.375" PointY="11.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

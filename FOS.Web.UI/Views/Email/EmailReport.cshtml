@@ -1,0 +1,147 @@
+﻿@model FOS.Shared.QAData
+
+@{
+    ViewBag.Title = "Email Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row-fluid">
+    <div class="span12">
+        <h3 class="page-title"></h3>
+    </div>
+</div>
+
+<div class="form-horizontal">
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN SAMPLE FORMPORTLET-->
+            <div class="widget green" style="">
+                <div class="widget-title">
+                    <h4>Email Reports</h4>
+                    <span class="tools">
+                    </span>
+                </div>
+                <div class="widget-body">
+                    <!-- BEGIN FORM-->
+                    <div class="control-group">
+                        <label class="control-label">Select Region *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.RegionID, new SelectList(Model.RegionsList, "ID", "Name"))
+                            @Html.ValidationMessageFor(model => model.RegionID)
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Select Category *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.DeptID, new SelectList(Model.Dept, "ID", "Name"))
+                            @Html.ValidationMessageFor(model => model.DeptID)
+                            @Html.HiddenFor(model => model.QAID)
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Select Center *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.SubDeptID, new SelectList(Model.SubDept, "ID", "SubDepartment"))
+                            @Html.ValidationMessageFor(model => model.DeptID)
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Select Audit Year *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.audit_id, new SelectList(Model.Audit, "audit_id", "audit_year"))
+                            @Html.ValidationMessageFor(model => model.audit_id)
+                        </div>
+                    </div>
+                    <div class="control-group" style="border-top: 1px solid #e5e5e5;">
+                        <div class="form-actions" style="padding-left: 240px;">
+                            <button type="button" class="btn btn-small btn-info" id="btnReport"><i class="icon-print icon-white" style="padding-right: 8px;"></i>Email Report</button>
+                        </div>
+                    </div>
+
+                    <!-- END FORM-->
+                </div>
+            </div>
+            <!-- END SAMPLE FORM PORTLET-->
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function LoadSubDepartment() {
+        try {
+            var RegionID = $("#RegionID").val();
+            var deptID = $("#DeptID").val();
+            $.ajax({
+                type: "POST",
+                data: { DeptID: deptID, RegionID: RegionID },
+                url: "@Url.Action("GetSubDepartmentListByDeptAndRegionWise", "Admin")",
+                dataType: 'json',
+                success: function (json) {
+                    //  debugger;
+                    var $el = $("#SubDeptID");
+                    $el.empty(); // remove old options
+                    $.each(json, function (value, key) {
+
+                        $el.append($("<option></option>")
+                                .val(key.ID).text(key.Name));
+                    });
+                }
+            });
+        } catch (e) {
+            $('#datatab').dataTable().fnDestroy();
+        }
+    }
+
+    function LoadCenterDepartment() {
+        try {
+            var deptID = $("#DeptID").val();
+            $.ajax({
+                type: "POST",
+                data: { CategoryID: deptID },
+                url: "@Url.Action("GetCenterDepartmentListByDeptWise", "Admin")",
+                dataType: 'json',
+                success: function (json) {
+                    var $el = $("#CenterDeptID");
+                    $el.empty(); // remove old options
+                    $.each(json, function (value, key) {
+
+                        $el.append($("<option></option>")
+                                .val(key.ID).text(key.Name));
+                    });
+
+                }
+
+            });
+        } catch (e) {
+            $('#datatab').dataTable().fnDestroy();
+        }
+
+    }
+    $("#RegionID").change(function () {
+        // debugger;
+        LoadSubDepartment();
+        LoadCenterDepartment();
+    });
+    $("#DeptID").change(function () {
+        // debugger;
+        LoadSubDepartment();
+        LoadCenterDepartment();
+    });
+
+    function GetReport(CategoryID, CenterID, audit_id, RegionID) {
+        window.open("@Url.Action("GetTotalSummaryResultReport", "Email")" + "?CategoryID=" + CategoryID + "&CenterID=" + CenterID + "&audit_id=" + audit_id + "&RegionID=" + RegionID);
+
+    }
+
+    $("#btnReport").click(function () {
+        var CategoryID = $("#DeptID").val();
+        var CenterID = $("#SubDeptID").val();
+        var audit_id = $("#audit_id").val();
+        var RegionID = $("#RegionID").val();
+        GetReport(CategoryID, CenterID, audit_id, RegionID);
+    });
+
+
+</script>
+

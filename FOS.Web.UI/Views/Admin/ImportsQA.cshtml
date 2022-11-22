@@ -1,0 +1,168 @@
+﻿@model FOS.Shared.QAData
+
+@{
+    ViewBag.Title = "QA";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href='~/Content/Style/fullcalendar.min.css' rel='stylesheet' />
+<link href='~/Content/Style/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+<script src='~/Scripts/lib/moment.min.js'></script>
+<script src='~/Scripts/lib/jquery-ui.min.js'></script>
+<script src='~/Scripts/lib/fullcalendar.min.js'></script>
+<link href="~/Content/Style/jquery-ui.min.css" rel="stylesheet" />
+<!-- BEGIN PAGE HEADER-->
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN THEME CUSTOMIZER-->
+        <!-- END THEME CUSTOMIZER-->
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title"></h3>
+        <ul class="breadcrumb" style="background-color: #08c">
+            <li>
+                <a href="#">Setup</a>
+                <span class="divider">/</span>
+            </li>
+            <li>
+                <a href="#">Manage QA</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+@using (Html.BeginForm("ImportsQA", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true)
+
+    <div class="row-fluid">
+        <!-- BEGIN SAMPLE FORMPORTLET-->
+        <div class="widget green" style="">
+            <div class="widget-title">
+                <h4>Manage Doctor</h4>
+                <span class="tools">
+                    @*<a href="javascript:;" class="icon-chevron-down"></a>*@
+                    @*<a href="javascript:;" class="icon-remove"></a>*@
+                </span>
+            </div>
+            <div class="widget-body">
+                <div class="span5">
+                    <!-- BEGIN FORM-->
+                    <!--Select Prefix-->
+                    <!-- EFName -->
+                    <div class="control-group">
+                        <label class="control-label">Select Region *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.RegionID, new SelectList(Model.RegionsList, "ID", "Name"))
+                            @Html.ValidationMessageFor(model => model.RegionID)
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Select Category *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.DeptID, new SelectList(Model.Dept, "ID", "Name"))
+                            @Html.ValidationMessageFor(model => model.DeptID)
+                            @Html.HiddenFor(model => model.QAID)
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Select Center *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.SubDeptID, new SelectList(Model.SubDept, "ID", "SubDepartment"))
+                            @Html.ValidationMessageFor(model => model.DeptID)
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Select Department *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.CenterDeptID, new SelectList(Model.CenterDept, "ID", "Name"))
+                            @Html.ValidationMessageFor(model => model.CenterDeptID)
+                        </div>
+                    </div>
+                    <input id="file" name="file" type="file" required />
+                    <div class="control-group" style="border-top: 1px solid #e5e5e5;">
+                        <div class="form-actions" style="padding-left:238px">
+                            <button type="submit" id="btnNew" class="btn btn-primary">
+                                <i class="icon-ok icon-white" style="padding-right:8px"></i><span id="create">Imports</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- END FORM-->
+            </div>
+        </div>
+        <!-- END SAMPLE FORM PORTLET-->
+    </div>
+}
+<script>
+    function LoadSubDepartment() {
+                    try {
+                        var deptID = $("#DeptID").val();
+                        var RegionID = $("#RegionID").val();
+
+                        $.ajax({
+                            type: "POST",
+                            data: { DeptID: deptID, RegionID: RegionID },
+                            url: "@Url.Action("GetSubDepartmentListByDeptAndRegionWise", "Admin")",
+                            dataType: 'json',
+                            success: function (json) {
+                                var $el = $("#SubDeptID");
+                                $el.empty(); // remove old options
+                                $.each(json, function (value, key) {
+
+                                    $el.append($("<option></option>")
+                                            .val(key.ID).text(key.Name));
+                                });
+
+                            }
+
+                        });
+                    } catch (e) {
+                        //alert(e);
+                        $('#datatab').dataTable().fnDestroy();
+                    }
+
+    }
+    $("#RegionID").change(function () {
+        // debugger;
+        LoadSubDepartment();
+        LoadCenterDepartment();
+    });
+    $("#DeptID").change(function () {
+        LoadSubDepartment();
+        LoadCenterDepartment();
+    });
+    function LoadCenterDepartment() {
+        try {
+            var deptID = $("#DeptID").val();
+            $.ajax({
+                type: "POST",
+                data: { CategoryID: deptID },
+                url: "@Url.Action("GetCenterDepartmentListByDeptWise", "Admin")",
+                dataType: 'json',
+            success: function (json) {
+                debugger;
+                var $el = $("#CenterDeptID");
+                $el.empty(); // remove old options
+                $.each(json, function (value, key) {
+
+                    $el.append($("<option></option>")
+                            .val(key.ID).text(key.Name));
+                });
+
+            }
+
+        });
+    } catch (e) {
+        alert(e);
+        $('#datatab').dataTable().fnDestroy();
+    }
+
+    }
+    $("#SubDeptID").change(function () {
+        LoadCenterDepartment();
+    });
+
+
+
+</script>

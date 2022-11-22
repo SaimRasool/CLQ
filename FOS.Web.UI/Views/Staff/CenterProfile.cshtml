@@ -1,0 +1,188 @@
+﻿@model FOS.Shared.StaffDetailData
+@{
+    ViewBag.Title = "Center";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- BEGIN PAGE HEADER-->
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN THEME CUSTOMIZER-->
+        <!-- END THEME CUSTOMIZER-->
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title"></h3>
+        <ul class="breadcrumb" style="background-color: #08c">
+            <li>
+                <a href="#">Admin</a>
+                <span class="divider">/</span>
+            </li>
+            <li>
+                <a href="#">Center Profile</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+@using (Ajax.BeginForm("AddUpdateSatffDetail", "Staff", new AjaxOptions { OnSuccess = "OnSuccess", OnFailure = "OnFailure" }, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true)
+
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN SAMPLE FORMPORTLET-->
+            <div class="widget green" style="">
+                <div class="widget-title">
+                    <h4>Center Profile</h4>
+                    <span class="tools">
+                    </span>
+                </div>
+                <div class="widget-body">
+                    <!-- BEGIN FORM-->
+                    <div class="form-horizontal">
+                        <div class="control-group">
+                            <label class="control-label">Select Region *</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(model => model.RegionID, new SelectList(Model.RegionsList, "ID", "Name"))
+                                @Html.ValidationMessageFor(model => model.RegionID)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Select Category *</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(model => model.CategoryID, new SelectList(Model.Category, "ID", "Name"))
+                                @Html.ValidationMessageFor(model => model.CategoryID)
+                            </div>
+                            <label class="control-label">Select Center *</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(model => model.CenterID, new SelectList(Model.Center, "ID", "Name"))
+                                @Html.ValidationMessageFor(model => model.CenterID)
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="control-group" style="border-top: 1px solid #e5e5e5;">
+                        <div class="form-actions" style="padding-left: 240px;">
+                            <button type="button" class="btn btn-small btn-info" id="btnReport"><i class="icon-print icon-white" style="padding-right: 8px;"></i>Report</button>
+                            <button type="button" class="btn btn-small btn-info" id="btnRefresh"><i class="icon-ban-circle icon-white" style="padding-right: 8px;"></i>Reset</button>
+                        </div>
+                    </div>
+
+                    <!-- END FORM-->
+                </div>
+            </div>
+            <!-- END SAMPLE FORM PORTLET-->
+        </div>
+    </div>
+
+}
+
+<script>
+    function GetReport(CenterID)
+    {
+        window.open("@Url.Action("GetStaffReport", "Staff")" + "?CenterID=" + CenterID);
+
+    }
+  function LoadSubDepartment() {
+        try {
+            var RegionID = $("#RegionID").val();
+            var deptID = $("#CategoryID").val();
+            $.ajax({
+                type: "POST",
+                data: { DeptID: deptID, RegionID: RegionID },
+                url: "@Url.Action("GetSubDepartmentListByDeptAndRegionWise", "Admin")",
+                dataType: 'json',
+                success: function (json) {
+                    //  debugger;
+                    var $el = $("#CenterID");
+                    $el.empty(); // remove old options
+                    $.each(json, function (value, key) {
+
+                        $el.append($("<option></option>")
+                                .val(key.ID).text(key.Name));
+                    });
+                }
+            });
+        } catch (e) {
+            $('#datatab').dataTable().fnDestroy();
+        }
+    }
+    $("#RegionID").change(function () {
+        // debugger;
+        LoadSubDepartment();
+       // LoadCenterDepartment();
+    });
+    $("#CategoryID").change(function () {
+        LoadSubDepartment();
+    });
+
+    $("#btnReport").click(function () {
+        var CenterID = $("#CenterID").val();
+        GetReport( CenterID);
+    });
+
+    $(document).ready(function () {
+
+        $("#liSetup,#liRegion").addClass("active");
+
+        var WriteCheck = "0";
+
+        if (WriteCheck == "@HttpContext.Current.Session["WriteCheck"]") {
+            // $("#btnNew").css("display", "none");
+            $("#btnNew").attr("disabled", true);
+        }
+        else {
+        }
+
+        $("#btnRefresh").click(function () {
+            ClearForm();
+        });
+
+    });
+</script>
+<script type="text/javascript">
+
+    function ClearForm() {
+        $('#female').val('');
+        $('#male').val('');
+        $('#CenterID').val('');
+        $('#sub_staff_id').val('');
+        $('#full_time').val('');
+        $('#part_time').val('');
+        $('#visiting').val('');
+        $('#id').val(0);
+        $('#create').text('Create');
+    }
+
+    function OnSuccess(response) {
+        if (response == "1") {
+            alertify.success("Satff Detail Saved Successfully");
+            $('#create').text('Create');
+            var dt = $('#datatab').DataTable();
+            dt.ajax.reload();
+            ClearForm();
+        }
+        else if (response == "0") {
+            alertify.error("Unable To Save Staff Detail.");
+        }
+        else if (response == "2") {
+            alertify.error("Staff Code Already Exist");
+        }
+        else {
+            alertify.error(response);
+        }
+
+    }
+
+    function OnFailure(response) {
+        if (response.status == 422) {
+            var errors = JSON.parse(response.responseText);
+            alertify.error(errors.errors);
+        }
+        else {
+            alertify.error(response);
+        }
+    }
+</script>

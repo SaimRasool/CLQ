@@ -1,0 +1,124 @@
+﻿@model FOS.Shared.QAData
+
+@{
+    ViewBag.Title = "Admin Approvel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row-fluid">
+    <div class="span12">
+        <h3 class="page-title"></h3>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN EXAMPLE TABLE widget-->
+        <div class="widget green">
+            <div class="widget-title">
+                <h4>Approvel Detail</h4>
+            </div>
+            <div class="widget-body">
+                <div>
+                    <div class="clearfix">
+                        <div class="btn-group pull-right"></div>
+                    </div>
+                    <div class="space15"></div>
+                    <table class="table table-bordered" id="demoGrid" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Center</th>
+                                <th>Lead Approvel</th>
+                                <th>Lead Approvel Date</th>
+                                <th>Admin Approvel</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE widget-->
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#demoGrid').DataTable({
+            "serverSide": true,
+            "bDestroy": true,
+            "autoWidth": true,
+            "filter": true,
+            "processing": true,
+            "ajax": {
+                "type": "POST",
+                "url": '@Url.Action("LoadAdminData", "Audit")',
+                "datatype": "json"
+            },
+            "oLanguage": { "sSearch": "Search Approvel : " },
+            "sDom": 'lftipr',
+            "columnDefs": [{
+                "targets": [0],
+                "visible": false,
+                "searchable": true
+            }],
+            "columns": [
+                { "data": "ID", "name": "ID"},
+                { "data": "Center" },
+                {
+                    "data": "LeadApprovel", "name": "LeadApprovel", "autoWidth": true,
+                    "render": function (data, type, full, meta) {
+                        if (data === true)
+                            return '<span class="label label-success p-2 text-center">Approved</span >';
+                        else
+                            return '<span class="bg-gradient-warning p-2 text-center">Pending</span >';
+                    }
+                },
+                {
+                    "data": "LeadApprovelDate", "type": "date ", "className": "text-center",
+                    "render": function (value) {
+                        if (value === null) return "";
+                        var pattern = /Date\(([^)]+)\)/;//date format from server side
+                        var results = pattern.exec(value);
+                        var dt = new Date(parseFloat(results[1]));
+
+                        return dt.getDate() + "/" + (dt.getMonth() + 1) + "/" + dt.getFullYear();
+                    }, "autoWidth": true
+                },
+                {
+                    "data": "AdminApprovel", "name": "AdminApprovel", "autoWidth": true,
+                    "render": function (data, type, full, meta) {
+                        if (data === true)
+                            return '<span class="label label-success p-2 text-center">Approved</span >';
+                        else
+                            return '<span class="label label-warning p-2 text-center">Pending</span >';
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return "<a class='btn btn-default btn-circle' onclick=Approved('" + row.ID + "'); ><i class='icon-ok-sign'></i></a>";
+                    }
+                },
+            ],
+            "order": [3, "asc"]
+
+        });
+
+    });
+    function Approved(ID) {
+         if (ID != 0) {
+                var url = '@Url.Content("~/" )' + "Audit/Approved";
+                $.post(url, { id: ID }, function(data) {
+                          if (data) {
+                              alertify.success("Approved Successfully.");
+                              oTable = $('#demoGrid').DataTable();
+                              oTable.draw();
+                          } else {
+                              alertify.error("Something Went Wrong.");
+                          }
+                    });
+            }
+        }
+</script>

@@ -1,0 +1,112 @@
+﻿@model IEnumerable<FOS.DataLayer.AuditComponent>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+                      <div class="row-fluid">
+                          <div class="span12">
+                              <!-- BEGIN THEME CUSTOMIZER-->
+                              <!-- END THEME CUSTOMIZER-->
+                              <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                              <h3 class="page-title"></h3>
+                              <ul class="breadcrumb" style="background-color: #08c">
+                                  <li>
+                                      <a href="#">Audit</a>
+                                      <span class="divider">/</span>
+                                  </li>
+                                  <li>
+                                      <a href="#">Audit List</a>
+                                  </li>
+                              </ul>
+                              <!-- END PAGE TITLE & BREADCRUMB-->
+                          </div>
+                      </div>
+ 
+    <p>
+        <a type="button" id="btnNew" class="btn btn-primary" href="@Url.Action("Create","Audit")">
+            Create New
+        </a> 
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+               Audit Date
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AuditTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AuditerName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InstitutionAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FaxNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InstitutionHead)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HeadPhoneNo)
+            </th>
+            <th>
+                Department
+            </th>
+            <th>
+                Center
+            </th>
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.AuditDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AuditTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AuditerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InstitutionAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FaxNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InstitutionHead)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HeadPhoneNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubDepartment.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+                @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+            </td>
+        </tr>
+    }
+    
+    </table>
+ 

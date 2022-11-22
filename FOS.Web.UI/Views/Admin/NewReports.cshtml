@@ -1,0 +1,116 @@
+﻿@model FOS.Shared.QAData
+
+@{
+    ViewBag.Title = "CheckList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row-fluid" style="padding-top:20px;">
+    <div class="span12">
+        <!-- BEGIN SAMPLE FORMPORTLET-->
+        <div class="widget green" style="">
+            <div class="widget-title">
+                <h4></h4>
+            </div>
+            <div class="widget-body">
+                <div class="form-inline">
+                    <!-- BEGIN FORM-->
+                    <label class="control-label span4" for="RegionID">
+                        Select Region *
+                        @Html.DropDownListFor(model => model.RegionID, new SelectList(Model.RegionsList, "ID", "Name"), new { @class = "text-center" })
+                    </label>
+                    <label class="control-label span4" for="DeptID">
+                        Select Category *
+                        @Html.DropDownListFor(model => model.DeptID, new SelectList(Model.Dept, "ID", "Name"), new { @class = "text-center" })
+                    </label>
+                    <label class="control-label span4" for="SubDeptID">
+                        Select Center *
+                        @Html.DropDownListFor(model => model.SubDeptID, new SelectList(Model.SubDept, "ID", "SubDepartment"), new { @class = "text-center" })
+                    </label>
+                    <label class="control-label span12 offset3" for="audit_id">
+                        Audit Year *
+                        @Html.DropDownListFor(model => model.audit_id, new SelectList(Model.Audit, "audit_id", "audit_year"),"From", new { @class = " text-center" })
+                        <span class="">-</span>
+                        @Html.DropDownList("to_audit_id", new SelectList(Model.Audit, "audit_id", "audit_year"), "To",new { @class = " text-center" })
+
+                    </label>
+               
+                    <div class="control-group offset3" style="border-top: 1px solid #e5e5e5;">
+                        <div class="form-actions" style="padding-left: 240px;">
+                            <button type="button" class="btn btn-small btn-info" id="btnReport"><i class="icon-print icon-white" style="padding-right: 8px;"></i>Print Report</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- END FORM-->
+            </div>
+        </div>
+        <!-- END SAMPLE FORM PORTLET-->
+    </div>
+</div>
+
+<script>
+
+    function LoadSubDepartment() {
+        try {
+            var RegionID = $("#RegionID").val();
+            var deptID = $("#DeptID").val();
+            $.ajax({
+                type: "POST",
+                data: { DeptID: deptID, RegionID: RegionID },
+                url: "@Url.Action("GetSubDepartmentListByDeptAndRegionWise", "Admin")",
+                dataType: 'json',
+                success: function (json) {
+                    //  debugger;
+                    var $el = $("#SubDeptID");
+                    $el.empty(); // remove old options
+                    $.each(json, function (value, key) {
+
+                        $el.append($("<option></option>")
+                                .val(key.ID).text(key.Name));
+                    });
+                }
+            });
+        } catch (e) {
+            $('#datatab').dataTable().fnDestroy();
+        }
+    }
+    function LoadCenterDepartment() {
+        try {
+            var deptID = $("#DeptID").val();
+            $.ajax({
+                type: "POST",
+                data: { CategoryID: deptID },
+                url: "@Url.Action("GetCenterDepartmentListByDeptWise", "Admin")",
+                dataType: 'json',
+                success: function (json) {
+                    var $el = $("#CenterDeptID");
+                    $el.empty(); // remove old options
+                    $.each(json, function (value, key) {
+
+                        $el.append($("<option></option>")
+                                .val(key.ID).text(key.Name));
+                    });
+                }
+            });
+        } catch (e) {
+            $('#datatab').dataTable().fnDestroy();
+        }
+    }
+    $("#RegionID").change(function () {
+        LoadSubDepartment();
+        LoadCenterDepartment();
+    });
+    $("#DeptID").change(function () {
+        LoadSubDepartment();
+        LoadCenterDepartment();
+    });
+    function GetReport(CategoryID, CenterID, audit_id, to_audit_id) {
+        window.open("@Url.Action("GetComparisonReport", "Admin")" + "?CategoryID=" + CategoryID + "&CenterID=" + CenterID + "&audit_id=" + audit_id + "&to_audit_id=" + to_audit_id);
+    }
+    $("#btnReport").click(function () {
+        var CategoryID = $("#DeptID").val();
+        var CenterID = $("#SubDeptID").val();
+        var audit_id = $("#audit_id").val();
+        var to_audit_id = $("#to_audit_id").val();
+        GetReport(CategoryID, CenterID, audit_id, to_audit_id);
+    });
+</script>

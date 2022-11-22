@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Departments Panel</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="~/Content/Material Admin/vendor/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="~/Content/Material Admin/vendor/font-awesome/css/font-awesome.min.css">
+    <!-- Fontastic Custom icon font-->
+    <link rel="stylesheet" href="~/Content/Material Admin/css/fontastic.css">
+    <!-- Google fonts - Poppins -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,700">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="~/Content/Material Admin/css/style.default.css" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="~/Content/Material Admin/css/custom.css">
+    <!-- Favicon-->
+    @*<link rel="shortcut icon" href="img/favicon.ico">*@
+   
+</head>
+<body>
+    <div class="page">
+        <!-- Main Navbar-->
+        <header class="header">
+            <nav class="navbar">
+            
+                <div class="container-fluid">
+                    <div class="navbar-holder d-flex align-items-center justify-content-between">
+                        <!-- Navbar Header-->
+                        <div class="navbar-header">
+                            <!-- Navbar Brand --><a href="index.html" class="navbar-brand d-none d-sm-inline-block">
+                                <div class="brand-text d-none d-lg-inline-block"><span>Deparment </span><strong>Dashboard</strong></div>
+                                <div class="brand-text d-none d-sm-inline-block d-lg-none"><strong>DD</strong></div>
+                            </a>
+                            <!-- Toggle Button--><a id="toggle-btn" href="#" class="menu-btn active"><span></span><span></span><span></span></a>
+                        </div>
+                        <!-- Navbar Menu -->
+                        <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
+                            <!-- Logout    -->
+                            @if (HttpContext.Current.Session["UserName"] != null)
+                            {
+                                <li class="nav-item" style="margin-top:12px; margin-left:300px"><p style="font:bold"><span style="padding-left: 10px; font: bold" class="username">Welcome @HttpContext.Current.Session["UserName"]</span></p></li>
+                                <li class="nav-item" style="margin-top:12px; margin-left:10px"><a href="@Url.Action("Logout", "Department")" class="nav-link logout"><span class="d-none d-sm-inline">Logout</span><i class="fa fa-sign-out"></i></a></li>
+                            }
+                            @*<li class="nav-item"><a href="login.html" class="nav-link logout"> <span class="d-none d-sm-inline">Logout</span><i class="fa fa-sign-out"></i></a></li>*@
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div class="page-content d-flex align-items-stretch">
+            <!-- Side Navbar -->
+            <nav class="side-navbar">
+                <!-- Sidebar Header-->
+                <div class="sidebar-header d-flex align-items-center">
+                    <div ><img src="~/Images/Alkhidmat.png" alt="..." class="img-fluid"></div>
+                    @*<div class="title">
+                        <h1 class="h4">Mark Stephen</h1>
+                        <p>Web Designer</p>
+                    </div>*@
+                </div>
+                <!-- Sidebar Navidation Menus--><span class="heading">Main</span>
+                <ul class="list-unstyled">
+                    <li class="active"><a href="@Url.Action("Index", "Department")"> <i class="icon-home"></i>Home </a></li>
+                    <li><a href="@Url.Action("Reports", "Department")"> <i class="icon-grid"></i>Reports </a></li>
+                    <li><a href="@Url.Action("ComplianceReports", "Department")"> <i class="icon-padnote"></i>Compliance Report</a></li>               
+                    <li><a href="@Url.Action("UploadCompliance", "Department")"> <i class="icon-padnote"></i>Upload Compliance</a></li>               
+                </ul>
+            </nav>
+            <div class="content-inner">
+         
+
+                @RenderBody()
+                <!-- Page Footer-->
+                <footer class="main-footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p>Alkhidmat Health Foundation Pakistan &copy;
+                                <script>document.write(new Date().getFullYear());</script></p>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    <!-- JavaScript files-->
+    <script src="~/Content/Material Admin/vendor/jquery/jquery.min.js"></script>
+    <script src="~/Content/Material Admin/vendor/popper.js/umd/popper.min.js"></script>
+    <script src="~/Content/Material Admin/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/Content/Material Admin/vendor/jquery.cookie/jquery.cookie.js"></script>
+    <script src="~/Content/Material Admin/vendor/chart.js/Chart.min.js"></script>
+    <script src="~/Content/Material Admin/vendor/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/Content/Material Admin/js/charts-home.js"></script>
+    <!-- Main File-->
+    <script src="~/Content/Material Admin/js/front.js"></script>
+</body>
+</html>

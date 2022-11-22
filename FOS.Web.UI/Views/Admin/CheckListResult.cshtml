@@ -1,0 +1,534 @@
+﻿@model FOS.Shared.QAData
+
+@{
+    ViewBag.Title = "CheckList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- BEGIN PAGE HEADER-->
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN THEME CUSTOMIZER-->
+        <!-- END THEME CUSTOMIZER-->
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title"></h3>
+        <ul class="breadcrumb" style="background-color: #08c">
+            <li>
+                <a href="#">Admin</a>
+                <span class="divider">/</span>
+            </li>
+            <li>
+                <a href="#">Manage CheckList Result</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<div class="form-horizontal">
+
+
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN SAMPLE FORMPORTLET-->
+            <div class="widget green" style="">
+                <div class="widget-title">
+                    <h4>Manage CheckList Result</h4>
+                    <span class="tools">
+                        @*<a href="javascript:;" class="icon-chevron-down"></a>*@
+                        @*<a href="javascript:;" class="icon-remove"></a>*@
+                    </span>
+                </div>
+                <div class="widget-body">
+                    <!-- BEGIN FORM-->
+                    <div class="control-group">
+                        <label class="control-label">Select Region *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.RegionID, new SelectList(Model.RegionsList, "ID", "Name"))
+                            @Html.ValidationMessageFor(model => model.RegionID)
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Select Category *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.DeptID, new SelectList(Model.Dept, "ID", "Name"))
+                            @Html.ValidationMessageFor(model => model.DeptID)
+                            @Html.HiddenFor(model => model.QAID)
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Select Center *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.SubDeptID, new SelectList(Model.SubDept, "ID", "SubDepartment"))
+                            @Html.ValidationMessageFor(model => model.DeptID)
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Select Audit Year *</label>
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.audit_id, new SelectList(Model.Audit, "audit_id", "audit_year"))
+                            @Html.ValidationMessageFor(model => model.audit_id)
+                        </div>
+                    </div>
+                    @*<div class="control-group">
+                            <label class="control-label">Select Department *</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(model => model.CenterDeptID, new SelectList(Model.CenterDept, "ID", "Name"))
+                                @Html.ValidationMessageFor(model => model.CenterDeptID)
+                            </div>
+                        </div>*@
+                    <div class="control-group" style="border-top: 1px solid #e5e5e5;">
+                        <div class="form-actions" style="padding-left: 240px;">
+                            <a href="@Url.Action("RatingResult", "Admin")" class="btn btn-primary">
+                                <span class="getCount1"></span> Comment Result
+                            </a>
+                            <button type="submit" id="btnSearch" class="btn btn-primary">
+                                <i class="icon-ok icon-white" style="padding-right: 8px;"></i><span id="create">Search</span>
+                            </button>
+                            <button type="button" class="btn btn-small btn-info" id="btnReport"><i class="icon-print icon-white" style="padding-right: 8px;"></i>Summary Report</button>
+                            <button type="button" class="btn btn-small btn-info" id="btnSReport"><i class="icon-print icon-white" style="padding-right: 8px;"></i>Overall Summary Report</button>
+                            <button type="button" class="btn btn-small btn-info" id="btnQReport"><i class="icon-print icon-white" style="padding-right: 8px;"></i>Questionare Report</button>
+                        </div>
+                    </div>
+
+                    <!-- END FORM-->
+                </div>
+            </div>
+            <!-- END SAMPLE FORM PORTLET-->
+        </div>
+    </div>
+</div>
+
+<!-- BEGIN EDITABLE TABLE widget-->
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN EXAMPLE TABLE widget-->
+        <div class="widget green">
+            <div class="widget-title">
+                <h4>View Detail</h4>
+                <span class="tools">
+                    @*<a href="javascript:;" class="icon-chevron-down"></a>*@
+                    @*<a href="javascript:;" class="icon-remove"></a>*@
+                </span>
+            </div>
+            <div class="widget-body">
+                <div>
+                    <div class="clearfix">
+                        <div class="btn-group pull-right"></div>
+                    </div>
+                    <div class="space15"></div>
+                    <table class="table table-striped table-hover table-bordered" id="datatab" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                @*<th>
+                                        @Html.DisplayNameFor(model => model.QAID)
+                                    </th>*@
+                                <th style="width: 5% !important">Sr #</th>
+                                <th style="width: 15% !important">
+                                    Department
+                                </th>
+                                <th style="width: 8% !important">
+                                    Fully Met
+                                </th>
+                                <th style="width: 8% !important">
+                                    Fully Met %
+                                </th>
+                                <th style="width: 10% !important">
+                                    Partially Met
+                                </th>
+                                <th style="width: 8% !important">
+                                    Partially Met %
+                                </th>
+                                <th style="width: 13% !important">
+                                    Not Met
+                                </th>
+                                <th style="width: 8% !important">
+                                    Not Met %
+                                </th>
+                                <th style="width: 13% !important">
+                                    Not Applicable
+                                </th>
+
+                                @*<th style="width: 10% !important">Actions</th>*@
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE widget-->
+    </div>
+</div>
+<div>
+    <label style="font-weight: 600;" id="TotalM">Fully Met: </label>
+    <label id="ObtainedM">Partially Met: </label>
+    <label id="ObtainedMP">Not Met: </label>
+    <label id="NAQ">Not Applicable:</label>
+</div>
+<div id="page-content-wrapper" class="page-content-toggle" style=" margin-bottom: 400px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div id="content" class="col-md-8 col-md-offset-1 col-xs-12">
+                <div id="chartContainer" style="margin-bottom:20px"></div>
+            </div> <!-- /content-->
+        </div> <!-- /row -->
+    </div> <!-- /container-fluid -->
+</div>
+<!-- /page-content-wrapper -->
+<!-- END EDITABLE TABLE widget-->
+<script>
+
+    function LoadSubDepartment() {
+        try {
+            var RegionID = $("#RegionID").val();
+            var deptID = $("#DeptID").val();
+            $.ajax({
+                type: "POST",
+                data: { DeptID: deptID, RegionID: RegionID },
+                url: "@Url.Action("GetSubDepartmentListByDeptAndRegionWise", "Admin")",
+                dataType: 'json',
+                success: function (json) {
+                    //  debugger;
+                    var $el = $("#SubDeptID");
+                    $el.empty(); // remove old options
+                    $.each(json, function (value, key) {
+
+                        $el.append($("<option></option>")
+                                .val(key.ID).text(key.Name));
+                    });
+                }
+            });
+        } catch (e) {
+            $('#datatab').dataTable().fnDestroy();
+        }
+    }
+
+    function LoadCenterDepartment() {
+        try {
+            var deptID = $("#DeptID").val();
+            $.ajax({
+                type: "POST",
+                data: { CategoryID: deptID },
+                url: "@Url.Action("GetCenterDepartmentListByDeptWise", "Admin")",
+                dataType: 'json',
+                success: function (json) {
+                    var $el = $("#CenterDeptID");
+                    $el.empty(); // remove old options
+                    $.each(json, function (value, key) {
+
+                        $el.append($("<option></option>")
+                                .val(key.ID).text(key.Name));
+                    });
+
+                }
+
+            });
+        } catch (e) {
+            $('#datatab').dataTable().fnDestroy();
+        }
+
+    }
+    $("#RegionID").change(function () {
+        // debugger;
+        LoadSubDepartment();
+        LoadCenterDepartment();
+    });
+    $("#DeptID").change(function () {
+        // debugger;
+        LoadSubDepartment();
+        LoadCenterDepartment();
+    });
+
+    function getTotalResult(CategoryID, CenterID, audit_id) {
+        try {
+            var deptID = $("#DeptID").val();
+            $.ajax({
+                type: "POST",
+                data: { CategoryID: CategoryID, CenterID: CenterID, audit_id: audit_id },
+                url: "@Url.Action("GetTotalResult", "Admin")",
+                dataType: 'json',
+                success: function (json) {
+                    //debugger;
+                    $("#TotalM").text('');
+                    $("#TotalM").text("Fully Met: " + json.TM);
+                    //$("#TotalM").text("Total Marks: " + json.TM);
+                    $("#ObtainedM").text('');
+                    $("#NAQ").text("");
+                    $("#ObtainedM").text("Partially Met: " + json.OM);
+                    $("#ObtainedMP").text('');
+                    $("#ObtainedMP").text("Not Met: " + json.TOP);
+                    $("#NAQ").text("Not Applicable: " + json.NA);
+
+                    LoadChart(json.TM, json.OM, json.TOP, json.NA);
+                }
+
+            });
+        } catch (e) {
+        }
+    }
+
+    function GenerateDetailGrid() {
+        var oTable = $('#datatab').DataTable({
+            "aLengthMenu": [[10, 25, 50, 75, 100], [10, 25, 50, 75, 100]],
+            "iDisplayLength": 10,
+            "paging": true,
+            "pagingType": "full_numbers",
+            "serverSide": true,
+            "bRetrieve": true,
+            "bDestroy": true,
+            "autoWidth": true,
+            "ajax": {
+                "type": "POST",
+                "url": '@Url.Action("CLRDataHandler", "Admin")',
+                "contentType": 'application/json; charset=utf-8',
+                'data': function (data) {
+                    //debugger;
+                    data.CategoryID = $("#DeptID").val();
+                    data.CenterID = $("#SubDeptID").val();
+                    data.audit_id = $("#audit_id").val();
+                    getTotalResult(data.CategoryID, data.CenterID, data.audit_id);
+                    return data = JSON.stringify(data);
+
+                },
+            },
+            "fnDrawCallback": function (osetting) {
+                var UpdateCheck = "0";
+                var DeleteCheck = "0";
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:first", nRow).html(iDisplayIndex + 1);
+                return nRow;
+            },
+            "oLanguage": { "sSearch": "Search Department : " },
+            "sDom": 'lftipr',
+            "processing": true,
+            "deferRender": true,
+            "bSelect": true,
+            "columns": [
+           { "data": "Department", "bSortable": false },
+           { "data": "Department" },
+           { "data": "TotalMarks" },
+                { "data": "TM" },
+           { "data": "ObtainedMarks" },
+                { "data": "OM" },
+           { "data": "ObtainedPercentage" },
+           { "data": "NA" },
+           { "data": "NotApplicable" },
+
+            ], "footerCallback": function (tfoot, data, start, end, display) {
+                var api = this.api();
+                var totalAmount = 0;
+                var len = data.length;
+                $(api.column(2).footer()).html(
+                    api.column(2).data().reduce(function (a, b) {
+                        return a + b;
+                    }, 0)
+                );
+                $(api.column(3).footer()).html(
+                    api.column(3).data().reduce(function (a, b) {
+                        totalAmount = (a + b);
+                        return (a + b);
+                    }, 0)
+                );
+                $(api.column(3).footer()).html(
+                    api.column(3).data().reduce(function (a, b) {
+                        return ((totalAmount / data.length).toFixed(2));
+                    }, 0)
+                );
+                $(api.column(4).footer()).html(
+                    api.column(4).data().reduce(function (a, b) {
+                        return (a + b);
+                    }, 0)
+                );
+                $(api.column(5).footer()).html(
+                    api.column(5).data().reduce(function (a, b) {
+                        totalAmount = (a + b);
+                        return ((a + b));
+                    }, 0)
+                );
+                $(api.column(5).footer()).html(
+                    api.column(5).data().reduce(function (a, b) {
+                        return ((totalAmount / data.length).toFixed(2));
+                    }, 0)
+                );
+                $(api.column(6).footer()).html(
+                    api.column(6).data().reduce(function (a, b) {
+                        return a + b;
+                    }, 0)
+                );
+
+                $(api.column(7).footer()).html(
+                    api.column(7).data().reduce(function (a, b) {
+                        totalAmount = (a + b);
+                        return (a + b);
+                    }, 0)
+                );
+                $(api.column(7).footer()).html(
+                    api.column(7).data().reduce(function (a, b) {
+                        return ((totalAmount / data.length).toFixed(2));
+                    }, 0)
+                );
+                $(api.column(8).footer()).html(
+                    api.column(8).data().reduce(function (a, b) {
+
+                        return a + b;
+                    }, 0)
+                );
+            },
+            "order": [3, "asc"]
+
+        });
+
+
+    }
+
+    $(document).ready(function () {
+
+        $("#liSetup,#liRegion").addClass("active");
+
+        var WriteCheck = "0";
+
+        if (WriteCheck == "@HttpContext.Current.Session["WriteCheck"]") {
+            // $("#btnNew").css("display", "none");
+            $("#btnNew").attr("disabled", true);
+        }
+        else {
+        }
+
+        $("#btnRefresh").click(function () {
+            ClearForm();
+        });
+
+        //GenerateDetailGrid();
+
+    });
+    $("#btnSearch").click(function () {
+        // debugger;
+
+        GenerateDetailGrid();
+        var dt = $('#datatab').DataTable();
+        dt.ajax.reload();
+    });
+    function GetReport(CategoryID, CenterID, audit_id) {
+        window.open("@Url.Action("GetTotalResultReport", "Admin")" + "?CategoryID=" + CategoryID + "&CenterID=" + CenterID + "&audit_id=" + audit_id);
+
+    }
+    function GetSReport(CategoryID, CenterID, audit_id, RegionID) {
+        window.open("@Url.Action("GetTotalSummaryResultReport", "Admin")" + "?CategoryID=" + CategoryID + "&CenterID=" + CenterID + "&audit_id=" + audit_id + "&RegionID=" + RegionID);
+
+    }
+    function GetQReport(CategoryID, CenterID, audit_id) {
+        window.open("@Url.Action("GetQuestionareReport", "Admin")" + "?CategoryID=" + CategoryID + "&CenterID=" + CenterID + "&audit_id=" + audit_id);
+
+    }
+    $("#btnReport").click(function () {
+        var CategoryID = $("#DeptID").val();
+        var CenterID = $("#SubDeptID").val();
+        var audit_id = $("#audit_id").val();
+        GetReport(CategoryID, CenterID, audit_id);
+    });
+    $("#btnSReport").click(function () {
+        var CategoryID = $("#DeptID").val();
+        var CenterID = $("#SubDeptID").val();
+        var audit_id = $("#audit_id").val();
+        var RegionID = $("#RegionID").val();
+        GetSReport(CategoryID, CenterID, audit_id, RegionID);
+    });
+    $("#btnQReport").click(function () {
+        var CategoryID = $("#DeptID").val();
+        var CenterID = $("#SubDeptID").val();
+        var audit_id = $("#audit_id").val();
+        GetQReport(CategoryID, CenterID, audit_id);
+    });
+    function LoadChart(totalMarks, ObtMarks, ObtPercentage, NA) {
+        $(function () {
+            var chart = new CanvasJS.Chart("chartContainer", {
+                //title: {
+                //    text: "Desktop Search Engine Market Share, Jul-2016"
+                //},
+                animationEnabled: true,
+                legend: {
+                    verticalAlign: "center",
+                    horizontalAlign: "left",
+                    fontSize: 20,
+                    fontFamily: "Helvetica"
+                },
+                theme: "light2",
+                data: [
+                {
+                    type: "pie",
+                    indexLabelFontFamily: "Garamond",
+                    indexLabelFontSize: 20,
+                    indexLabel: "{label} {y}",
+                    startAngle: -20,
+                    showInLegend: true,
+                    toolTipContent: "{legendText} {y}",
+                    dataPoints: [
+                        { y: totalMarks, legendText: "Fully Met", label: "Fully Met:" },
+                        { y: ObtMarks, legendText: "Partially Met Marks", label: "Partially Met Marks:" },
+                        { y: ObtPercentage, legendText: "Not Met", label: "Not Met:" },
+                        { y: NA, legendText: "Not Applicable", label: "Not Applicable:" },
+                    ],
+
+                    //You can add dynamic data from the controller as shown below. Check the controller and uncomment the line which generates dataPoints.
+                    //dataPoints: @Html.Raw(ViewBag.DataPoints),
+                }
+                ]
+            });
+            chart.render();
+        });
+    }
+</script>
+<script type="text/javascript">
+
+    function ClearForm() {
+        $('#Name').val('');
+        $('#ShortCode').val('');
+        $('#ID').val(0);
+        $('#create').text('Create');
+    }
+
+    function OnSuccess(response) {
+        if (response == "1") {
+            alertify.success("Department Saved Successfully");
+            $('#create').text('Create');
+            var dt = $('#datatab').DataTable();
+            dt.ajax.reload();
+            ClearForm();
+        }
+        else if (response == "0") {
+            alertify.error("Unable To Save Department.");
+        }
+        else if (response == "2") {
+            alertify.error("Department Code Already Exist");
+        }
+        else {
+            alertify.error(response);
+        }
+
+    }
+
+    function OnFailure(response) {
+        if (response.status == 422) {
+            var errors = JSON.parse(response.responseText);
+            alertify.error(errors.errors);
+        }
+        else {
+            alertify.error(response);
+        }
+    }
+</script>
+

@@ -1,0 +1,43 @@
+﻿@model  FOS.Shared.QAData
+<div class="row-fluid">
+
+    <div class="span12">
+        <!-- BEGIN EXAMPLE TABLE widget-->
+        <div class="widget green">
+            <div class="widget-title">
+                <h4>Approvel Detail</h4>
+            </div>
+            <div class="widget-body">
+                    <div class="clearfix">
+                        <div class="btn-group pull-right"></div>
+                    </div>
+                    <div class="space15"></div>
+                    <table class="table table-bordered" id="demoGrid" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Upload Date</th>
+                                <th>Attachments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.ComplianceReports!=null && Model.ComplianceReports.Count > 0)
+                            {
+                                int i = 1;
+                                foreach (var itm in Model.ComplianceReports)
+                                {
+                            <tr>
+                                <td>@itm.Date</td>
+                                <td>@Html.ActionLink("Attachment " + (i++), "Download", new { file = itm.Path }, new { @class = "btn btn-primary" })
+                                </td>
+                            </tr>
+
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE widget-->
+    </div>
+</div>

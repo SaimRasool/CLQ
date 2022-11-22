@@ -1,0 +1,183 @@
+﻿@model FOS.Shared.QAData
+
+@{
+    ViewBag.Title = "Questions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- BEGIN PAGE HEADER-->
+
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN THEME CUSTOMIZER-->
+        <!-- END THEME CUSTOMIZER-->
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title"></h3>
+        <ul class="breadcrumb" style="background-color: #08c">
+            <li>
+                <a href="#">Admin</a>
+                <span class="divider">/</span>
+            </li>
+            <li>
+                <a href="#">Result Question Rating</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<div style="width:100% !important; float:left; ">
+    @using (Ajax.BeginForm("AddUpdateDepartment", "Admin", new AjaxOptions { OnSuccess = "OnSuccess", OnFailure = "OnFailure" }, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.ValidationSummary(true)
+
+        <div class="row-fluid">
+            <div class="container-fluid">
+                <div class="span12">
+                    <!-- BEGIN SAMPLE FORMPORTLET-->
+                    <div class="widget green" style="">
+                        <div class="widget-title">
+                            <h4>Result Question Rating</h4>
+                            <span class="tools">
+                            </span>
+                        </div>
+                        <div class="widget-body">
+                            <!-- BEGIN FORM-->
+                            <div class="control-group">
+                                <label class="control-label">Select Category *</label>
+                                <div class="controls">
+                                    @Html.DropDownListFor(model => model.DeptID, new SelectList(Model.Dept, "ID", "Name"), new { @class = "form-control" })
+                                    @*@Html.ValidationMessageFor(model => model.DeptID)*@
+
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Select Center *</label>
+                                <div class="controls">
+                                    @Html.DropDownListFor(model => model.SubDeptID, new SelectList(Model.SubDept, "ID", "SubDepartment"), new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Select Department *</label>
+                                <div class="controls">
+                                    @Html.DropDownListFor(model => model.CenterDeptID, new SelectList(Model.CenterDept, "ID", "Name"), new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- END SAMPLE FORM PORTLET-->
+                </div>
+            </div>
+        </div>
+        <div id="Result_Div">
+            @{
+                Html.RenderPartial("~/Views/Shared/_ResultDetail.cshtml", Model);
+            }
+        </div>
+    }
+</div>
+
+<script>
+                function LoadSubDepartment() {
+                    try {
+                        var deptID = $("#DeptID").val();
+                        $.ajax({
+                            type: "POST",
+                            data: { DeptID: deptID },
+                            url: "@Url.Action("GetSubDepartmentListByDeptWise", "Admin")",
+                            dataType: 'json',
+                            success: function (json) {
+                                var $el = $("#SubDeptID");
+                                $el.empty(); // remove old options
+                                $.each(json, function (value, key) {
+
+                                    $el.append($("<option></option>")
+                                            .val(key.ID).text(key.Name));
+                                });
+
+                            }
+
+                        });
+                    } catch (e) {
+                        //alert(e);
+                        $('#datatab').dataTable().fnDestroy();
+                    }
+
+                }
+    $("#DeptID").change(function () {
+                    LoadSubDepartment();
+                    LoadCenterDepartment();
+                });
+                function LoadCenterDepartment() {
+                    try {
+                        var deptID = $("#DeptID").val();
+                        $.ajax({
+                            type: "POST",
+                            data: { CategoryID: deptID },
+                            url: "@Url.Action("GetCenterDepartmentListByDeptWise", "Admin")",
+                            dataType: 'json',
+                            success: function (json) {
+                                var $el = $("#CenterDeptID");
+                                $el.empty(); // remove old options
+                                $.each(json, function (value, key) {
+
+                                    $el.append($("<option></option>")
+                                            .val(key.ID).text(key.Name));
+                                });
+                            }
+
+                        });
+                    } catch (e) {
+                        //alert(e);
+                        $('#datatab').dataTable().fnDestroy();
+                    }
+
+                }
+    $("#CenterDeptID").change(function () {
+        debugger;
+        if ($("#DeptID").val() !== '0' && $("#SubDeptID").val() != '0' && $("#CenterDeptID").val() != '0') {
+            GetData({ deptID : $("#DeptID").val(), CenterDeptID : $("#CenterDeptID").val(), SubDeptID : $("#SubDeptID").val() }, 'Result_Div', function (result) { });
+        }
+                    
+    });
+
+    
+
+</script>
+<script>
+    function GetData(data, divId, callback) {
+        $.ajax({
+            cache: false,
+            async: false,
+            type: 'POST',
+            url: "@Url.Action("GetResultDetail", "Admin")",
+            data: data,
+            //dataType: "html",
+            //contentType: 'application/json; charset=utf-8',
+            success: function (data, textStatus, jqXHR) {
+                if (data == "Invalid") {
+                    swal("Record Not Found!", {
+                        icon: "danger",
+                        dangerMode: true,
+                    });
+                    callback(false);
+                }
+                else {
+                    if (divId != undefined && divId != null && divId != '') {
+                        //Set Div Data
+                        $('#' + divId).html(data);
+                        callback(true);
+                    }
+                    else {
+                        callback(data);
+                    }
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                callback(false);
+            }
+        });
+    } 
+</script>

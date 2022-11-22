@@ -1,0 +1,87 @@
+﻿@{
+    ViewBag.Title = "Certificate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- BEGIN PAGE HEADER-->
+<div class="row-fluid">
+    <div class="span12">
+        <!-- BEGIN THEME CUSTOMIZER-->
+        <!-- END THEME CUSTOMIZER-->
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title"></h3>
+        <ul class="breadcrumb" style="background-color: #08c">
+            <li>
+                <a href="#">Admin</a>
+                <span class="divider">/</span>
+            </li>
+            <li>
+                <a href="#">Print Certificate</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+@using (Html.BeginForm("Index", "Certificate", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-inline" }))
+{
+
+    @Html.ValidationSummary(true)
+
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN SAMPLE FORMPORTLET-->
+            <div class="widget green" style="">
+                <div class="widget-title">
+                    <h4>Print Certificate</h4>
+                    <span class="tools">
+                    </span>
+                </div>
+                <div class="widget-body">
+                    <!-- BEGIN FORM-->
+                    <div class="control-group">
+                        <label class="control-label">Enter Title *</label>
+                        <div class="controls">
+                            <input type="text" name="Title" required />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Enter Serial *</label>
+                        <div class="controls">
+                            <input type="text" name="Serial" required />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Enter From Date *</label>
+                        <div class="controls">
+                            <input type="date" name="FromDate" required />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Enter To Date *</label>
+                        <div class="controls">
+                            <input type="date" name="ToDate" required />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Upload Badge *</label>
+                        <div class="controls">
+                            <input type="file" name="file" class="form-control custom-file" />
+                        </div>
+                    </div>
+
+                    <div class="control-group" style="border-top: 1px solid #e5e5e5;">
+                        <div class="form-actions" style="padding-left: 240px;">
+                            <button type="submit" id="btnNew" class="btn btn-primary">
+                                <i class="icon-ok icon-white" style="padding-right: 8px;"></i><span id="create">Create</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- END FORM-->
+                </div>
+            </div>
+            <!-- END SAMPLE FORM PORTLET-->
+        </div>
+    </div>
+
+}

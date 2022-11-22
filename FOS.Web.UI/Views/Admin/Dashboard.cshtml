@@ -1,0 +1,230 @@
+﻿@model FOS.Shared.QAData
+
+@{
+    ViewBag.Title = "DashBoard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row-fluid pt-2">
+    <div class="span12">
+        <!-- BEGIN SAMPLE FORMPORTLET-->
+        <div class="widget green" style="">
+            <div class="widget-title">
+                <h4>DashBoard</h4>
+                <span class="tools">
+                </span>
+            </div>
+            <div class="widget-body">
+                <!-- BEGIN FORM-->
+                <div class="control-group ">
+                    <label class="control-label">Select Category *</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(model => model.DeptID, new SelectList(Model.Dept, "ID", "Name"))
+                        @Html.ValidationMessageFor(model => model.DeptID)
+                        @Html.HiddenFor(model => model.QAID)
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Select Center *</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(model => model.SubDeptID, new SelectList(Model.SubDept, "ID", "SubDepartment"))
+                        @Html.ValidationMessageFor(model => model.SubDeptID)
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Select Audit Yeat *</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(model => model.audit_id, new SelectList(Model.Audit, "audit_id", "audit_year"))
+                        @Html.ValidationMessageFor(model => model.audit_id)
+                    </div>
+                </div>
+
+                <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+                <hr />
+                <br />
+                <div id="chartContainer2" style="height: 300px; width: 100%;"></div>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+        <!-- END SAMPLE FORM PORTLET-->
+    </div>
+</div>
+
+<script>
+
+    function LoadSubDepartment() {
+        try {
+           // debugger;
+            var deptID = $("#DeptID").val();
+
+            $.ajax({
+                type: "POST",
+                data: { DeptID: deptID },
+                url: "@Url.Action("GetSubDepartmentListByDeptWise", "Admin")",
+                dataType: 'json',
+                success: function (json) {
+                  //  debugger;
+                    var $el = $("#SubDeptID");
+                    $el.empty(); // remove old options
+                    $.each(json, function (value, key) {
+
+                        $el.append($("<option></option>")
+                                .val(key.ID).text(key.Name));
+                    });
+
+                }
+
+            });
+        } catch (e) {
+        }
+
+    }
+
+    $("#DeptID").change(function () {
+       // debugger;
+        LoadSubDepartment();
+    });
+    $("#SubDeptID").change(function () {
+        var dataPoints = [],dataPoints1=[],dataPoints2=[];
+        GetData({ CategoryID: $("#DeptID").val(), CenterID: $("#SubDeptID").val(), audit_id: $("#audit_id").val() }, '', function (result) {
+    for (var i = 0; i < result.length; i++) {
+		dataPoints.push({
+			label: String(result[i].Department),
+			y: parseFloat(result[i].FullPer)
+		});
+    dataPoints1.push({
+			label: String(result[i].Department),
+			y: parseFloat(result[i].PartialPer)
+		});
+    dataPoints2.push({
+			label: String(result[i].Department),
+			y: parseFloat(result[i].NotPer)
+		});
+	}
+    });
+      var chart2 = new CanvasJS.Chart("chartContainer2", {
+	animationEnabled: true,
+    exportEnabled: true,
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+
+	axisX: {
+		title: "Departments"
+	},
+    axisY: {
+		title: "Partially Met (in %)",
+		titleFontColor: "#4F81BC",
+		lineColor: "#4F81BC",
+		labelFontColor: "#4F81BC",
+		tickColor: "#4F81BC",
+		includeZero: true,
+        suffix: "%"
+	},
+	axisY2: {
+		title: "Not Met (in %)",
+		titleFontColor: "#C0504E",
+		lineColor: "#C0504E",
+		labelFontColor: "#C0504E",
+		tickColor: "#C0504E",
+		includeZero: true,
+        suffix: "%"
+	},
+    toolTip: {
+		shared: true
+	},
+	legend: {
+		cursor: "pointer",
+		itemclick: toggleDataSeries
+	},
+	data: [{
+		type: "column",
+        name: "Partial Met",
+        showInLegend: true,
+		yValueFormatString: "#,##0.0#\"%\"",
+		dataPoints:dataPoints1
+	},
+    	{
+		type: "column",
+		name: "Not Met",
+		axisYType: "secondary",
+		showInLegend: true,
+		yValueFormatString: "#,##0.0#\"%\"",
+		dataPoints:dataPoints2
+	}
+    ]
+});
+
+    var chart = new CanvasJS.Chart("chartContainer", {
+	animationEnabled: true,
+    exportEnabled: true,
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	title: {
+		text: "Rating Result"
+	},
+
+    axisY: {
+		title: "Fully Met (in %)",
+		titleFontColor: "#4F81BC",
+		lineColor: "#4F81BC",
+		labelFontColor: "#4F81BC",
+		tickColor: "#4F81BC",
+		includeZero: true,
+        suffix: "%"
+	},
+	data: [{
+		type: "column",
+        name: "FullyMet Met",
+
+		yValueFormatString: "#,##0.0#\"%\"",
+		dataPoints:dataPoints
+	}
+    ]
+});
+
+    chart.render();
+     chart2.render();
+    function toggleDataSeries(e) {
+	if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+		e.dataSeries.visible = false;
+	} else {
+		e.dataSeries.visible = true;
+	}
+	e.chart.render();
+}
+    });
+</script>
+<script>
+    function GetData(data, divId, callback) {
+        $.ajax({
+            cache: false,
+            async: false,
+            type: 'POST',
+            url: "@Url.Action("GetDashBoard", "Admin")",
+            data: data,
+            //dataType: "html",
+            //contentType: 'application/json; charset=utf-8',
+            success: function (data, textStatus, jqXHR) {
+                if (data == "Invalid") {
+                    swal("Record Not Found!", {
+                        icon: "danger",
+                        dangerMode: true,
+                    });
+                    callback(false);
+                }
+                else {
+                    if (divId != undefined && divId != null && divId != '') {
+                        //Set Div Data
+                        $('#' + divId).html(data);
+                        callback(true);
+                    }
+                    else {
+                        callback(data);
+                    }
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                callback(false);
+            }
+        });
+    }
+</script>
