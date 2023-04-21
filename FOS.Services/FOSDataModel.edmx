@@ -96,6 +96,24 @@
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
           <Property Name="CreatedBy" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="ComplianceRatedNumber">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="AuditID" Type="int" />
+          <Property Name="CategoryID" Type="int" />
+          <Property Name="CenterID" Type="int" />
+          <Property Name="DeptID" Type="int" />
+          <Property Name="RatedValue" Type="int" />
+          <Property Name="QuestionID" Type="int" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="OnCreated" Type="datetime" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="ImagePath" Type="nvarchar" MaxLength="200" />
+          <Property Name="remarks" Type="nvarchar" MaxLength="300" />
+        </EntityType>
         <EntityType Name="ComplianceReport">
           <Key>
             <PropertyRef Name="Id" />
@@ -673,6 +691,7 @@
           <EntitySet Name="AuditComponentDetail" EntityType="Self.AuditComponentDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CenterDepartment" EntityType="Self.CenterDepartment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cities" EntityType="Self.Cities" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ComplianceRatedNumber" EntityType="Self.ComplianceRatedNumber" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ComplianceReport" EntityType="Self.ComplianceReport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Designation" EntityType="Self.Designation" Schema="dbo" store:Type="Tables" />
@@ -1435,6 +1454,7 @@
           <EntitySet Name="Audit" EntityType="FOS_WallCoatModel.Audit" />
           <EntitySet Name="Approvel" EntityType="FOS_WallCoatModel.Approvel" />
           <EntitySet Name="ComplianceReport" EntityType="FOS_WallCoatModel.ComplianceReport" />
+          <EntitySet Name="ComplianceRatedNumber" EntityType="FOS_WallCoatModel.ComplianceRatedNumber" />
           </EntityContainer>
         <ComplexType Name="AreasRelatedtoCities_Result">
           <Property Type="Int32" Name="SaleOfficerID" Nullable="true" />
@@ -3210,6 +3230,24 @@
           <Property Name="Path" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="Date" Type="DateTime" Precision="0" />
         </EntityType>
+        <EntityType Name="ComplianceRatedNumber">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="AuditID" Type="Int32" />
+          <Property Name="CategoryID" Type="Int32" />
+          <Property Name="CenterID" Type="Int32" />
+          <Property Name="DeptID" Type="Int32" />
+          <Property Name="RatedValue" Type="Int32" />
+          <Property Name="QuestionID" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="OnCreated" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ImagePath" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="remarks" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4008,6 +4046,25 @@
                 <ScalarProperty Name="AuditID" ColumnName="AuditID" />
                 <ScalarProperty Name="CenterID" ColumnName="CenterID" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ComplianceRatedNumber">
+            <EntityTypeMapping TypeName="FOS_WallCoatModel.ComplianceRatedNumber">
+              <MappingFragment StoreEntitySet="ComplianceRatedNumber">
+                <ScalarProperty Name="remarks" ColumnName="remarks" />
+                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="OnCreated" ColumnName="OnCreated" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="QuestionID" ColumnName="QuestionID" />
+                <ScalarProperty Name="RatedValue" ColumnName="RatedValue" />
+                <ScalarProperty Name="DeptID" ColumnName="DeptID" />
+                <ScalarProperty Name="CenterID" ColumnName="CenterID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="AuditID" ColumnName="AuditID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

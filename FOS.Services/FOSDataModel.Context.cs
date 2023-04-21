@@ -54,6 +54,7 @@ namespace FOS.DataLayer
         public virtual DbSet<Audit> Audit { get; set; }
         public virtual DbSet<Approvel> Approvel { get; set; }
         public virtual DbSet<ComplianceReport> ComplianceReport { get; set; }
+        public virtual DbSet<ComplianceRatedNumber> ComplianceRatedNumber { get; set; }
     
         [DbFunction("FOSDataModel", "fnStringList2Table")]
         public virtual IQueryable<fnStringList2Table_Result> fnStringList2Table(string list)

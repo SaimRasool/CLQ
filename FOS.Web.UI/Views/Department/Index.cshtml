@@ -1,4 +1,4 @@
-﻿
+﻿@model FOS.Shared.QAData
 
 @{
     Layout = "~/Views/Shared/_UserLayout.cshtml";
@@ -7,14 +7,14 @@
 <!-- Page Header-->
 <header class="page-header">
     <div class="container-fluid">
-        <h2 class="no-margin-bottom">Dashboard</h2>
+        <h2 class="no-margin-bottom">Compliance</h2>
     </div>
 </header>
-<!-- Dashboard Counts Section-->
+ @*Dashboard Counts Section
 <section class="dashboard-counts no-padding-bottom">
     <div class="container-fluid">
         <div class="row bg-white has-shadow">
-            <!-- Item -->
+             Item 
             <div class="col-xl-3 col-sm-6">
                 <div class="item d-flex align-items-center">
                     <div class="icon bg-violet"><i class="icon-user"></i></div>
@@ -27,7 +27,7 @@
                     <div class="number"><strong>25</strong></div>
                 </div>
             </div>
-            <!-- Item -->
+             Item 
             <div class="col-xl-3 col-sm-6">
                 <div class="item d-flex align-items-center">
                     <div class="icon bg-red"><i class="icon-padnote"></i></div>
@@ -40,7 +40,7 @@
                     <div class="number"><strong>70</strong></div>
                 </div>
             </div>
-            <!-- Item -->
+             Item 
             <div class="col-xl-3 col-sm-6">
                 <div class="item d-flex align-items-center">
                     <div class="icon bg-green"><i class="icon-bill"></i></div>
@@ -53,7 +53,7 @@
                     <div class="number"><strong>40</strong></div>
                 </div>
             </div>
-            <!-- Item -->
+             Item 
             <div class="col-xl-3 col-sm-6">
                 <div class="item d-flex align-items-center">
                     <div class="icon bg-orange"><i class="icon-check"></i></div>
@@ -69,43 +69,259 @@
         </div>
     </div>
 </section>
-<!-- Dashboard Header Section    -->
+ Dashboard Header Section*@    
 <section class="dashboard-header">
     <div class="container-fluid">
         <div class="row">
             <!-- Statistics -->
-            <div class="statistics col-lg-3 col-12">
-                <div class="statistic d-flex align-items-center bg-white has-shadow">
-                    <div class="icon bg-red"><i class="fa fa-tasks"></i></div>
-                    <div class="text"><strong>234</strong><br><small>Applications</small></div>
+            @using (Ajax.BeginForm("AddRatedNumber", "Department", new AjaxOptions { OnSuccess = "OnSuccess", OnFailure = "OnFailure" }, new { @class = "form-horizontal" }))
+            {
+                @Html.HiddenFor(model => model.SubDeptID)
+                @Html.HiddenFor(model => model.DeptID)
+                @Html.HiddenFor(model => model.audit_id)
+                <div class="control-group">
+                    <label class="control-label">Select Department *</label>
+                    <div class="controls">
+                        @Html.DropDownListFor(model => model.CenterDeptID, new SelectList(Model.CenterDept, "ID", "Name"),"--Select Department--", new { @class = "form-control" })
+                    </div>
                 </div>
-                <div class="statistic d-flex align-items-center bg-white has-shadow">
-                    <div class="icon bg-green"><i class="fa fa-calendar-o"></i></div>
-                    <div class="text"><strong>152</strong><br><small>Interviews</small></div>
+
+                <div class="row" style="margin-left: 0px;margin-top: 20px;">
+                    <div class="span12">
+                        <div id="forms_ul" style="font-size: 12px;">
+                        </div>
+                    </div>
+
                 </div>
-                <div class="statistic d-flex align-items-center bg-white has-shadow">
-                    <div class="icon bg-orange"><i class="fa fa-paper-plane-o"></i></div>
-                    <div class="text"><strong>147</strong><br><small>Forwards</small></div>
+                <div class="row" style="margin-left: 0px;margin-top: 20px;">
+                    <div class="form-actions" style="float: right;padding-right: 15px;margin-top: -10px;border-top:0px;background:none">
+                        <button type="submit" class="btn btn-small btn-success" id="btnSubmit"><i class="icon-ok icon-white" style="padding-right:8px"></i><span id="create">Create</span></button>
+                        <button type="button" class="btn btn-small btn-inverse" id="btnRefresh"><i class="icon-ban-circle icon-white" style="padding-right:8px"></i>Reset</button>
+                    </div>
+                    <div class="form-actions" style="float:left;padding-right: 15px;margin-top: -10px;border-top:0px;background:none">
+                    </div>
                 </div>
-            </div>
-            <!-- Line Chart            -->
-            <div class="chart col-lg-6 col-12">
-                <div class="line-chart bg-white d-flex align-items-center justify-content-center has-shadow">
-                    <canvas id="lineCahrt"></canvas>
-                </div>
-            </div>
-            <div class="chart col-lg-3 col-12">
-                <!-- Bar Chart   -->
-                <div class="bar-chart has-shadow bg-white">
-                    <div class="title"><strong class="text-violet">95%</strong><br><small>Current Server Uptime</small></div>
-                    <canvas id="barChartHome"></canvas>
-                </div>
-                <!-- Numbers-->
-                <div class="statistic d-flex align-items-center bg-white has-shadow">
-                    <div class="icon bg-green"><i class="fa fa-line-chart"></i></div>
-                    <div class="text"><strong>99.9%</strong><br><small>Success Rate</small></div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </section>
+<script src="~/Scripts/js/jquery-1.8.3.min.js"></script>
+
+
+<script src="~/Scripts/WebCam.js"></script>
+<script>
+
+    function loadImage(event) {
+        var ID = $(event).attr("data-id");
+        if (event.files && event.files[0]) {
+            if (!event.files[0].name.includes("gif") && !event.files[0].name.includes("png")
+            && !event.files[0].name.includes("jpg") && !event.files[0].name.includes("jpeg")) {
+                alert("Invalid file selected, only gif/png/jpg/jpeg files are allowed.");
+                return false;
+            }
+
+            if (event.files[0].size > 1000000) {//30740(30KB)
+               alert("Invalid file size, file size should be less than 1 MB");
+                return false;
+            }
+            var reader = new FileReader();
+            reader.readAsDataURL(event.files[0]);
+            reader.onload = function (e) {
+                $('#outputImage' + ID).attr('src', e.target.result);
+                $("input[name=ImagePath" + ID + "]").val(e.target.result);
+
+            }
+            $("input[name=ImageName" + ID + "]").val(event.files[0].name);
+
+        }
+    };
+
+
+
+                var ID = $(this).attr("data-id");
+                $("#btnSubmit").click(function () {
+                    var RolePages = [];
+                    var Actions = [];
+                    $("input[name=page]:checked").each(function () {
+                        var a = [];
+                        if ($(this).attr('data-id') != "") {
+                            var ID = $(this).attr("data-id");
+                            var One = $(this).attr("data-one");
+                            var RatedValue = "";
+                            $("input[name=action" + ID + "]:checked").each(function () {
+                                RatedValue = $(this).val();
+                                var RTValue = RatedValue;
+                                var QRID = ID;
+                                var remarks = $("textarea[name=remarks" + ID + "]").val();
+                                var ImagePath = $("input[name=ImagePath" + ID + "]").val();
+                                var ImageName = $("input[name=ImageName" + ID + "]").val();
+                                var CategoryID = $("#DeptID").val();
+                                var CenterID = $("#SubDeptID").val();
+                                var DeptID = $("#CenterDeptID").val();
+                                var audit_id = $("#audit_id").val();
+                                //if (RTValue == "") {
+                                //    alertify.error("Please Select All Question Checks!.");
+                                //    return false;
+                                //}
+                                //else {
+                                a.push(QRID);
+                                a.push(RTValue);
+                                a.push(CategoryID);
+                                a.push(CenterID);
+                                a.push(DeptID);
+                                a.push(remarks);
+                                a.push(ImagePath);
+                                a.push(ImageName);
+                                a.push(audit_id);
+                                $("input[name=page]").prop("checked", false);
+                                $("input[name=action" + ID + "]").prop("disabled", true);
+                                //}
+
+                            });
+                        }
+                        PageAction.push({
+                            Page: $(this).attr("data-id"),
+                            QRID: a[0],
+                            RatedValue: a[1],
+                            CategoryID: a[2],
+                            CenterID: a[3],
+                            DeptID: a[4],
+                            remarks: a[5],
+                            ImagePath: a[6],
+                            ImageName: a[7],
+                            audit_id: a[8],
+                        });
+                    });
+
+                    if (PageAction.length > 0) {
+
+                        $("#btnSubmit").prop('disabled', true);
+                        try {
+                            var AuditYear = $("#AuditYear").val();
+                            if (window.FormData !== undefined && (AuditYear !== '' || AuditYear !== "")) {
+                                        $.ajax({
+                                            type: "POST",
+                                            data:
+                                                JSON.stringify({
+                                                    PageActions: PageAction
+                                                }),
+
+                                            url: "@Url.Action("AddRatedNumber", "Department")",
+                                            dataType: 'json',
+                                            contentType: 'application/json',
+                                            success: function (json) {
+                                                PageAction = [];
+                                                $("#FileUpload1").val("");
+                                                $("#ObtainedMarks").text("");
+                                                $("#ObtainedMarksP").text("");
+                                                $("#TotalM").text("");
+                                                $("#NAQ").text("");
+                                                $("#ObtainedMarks").text("Partially Met: " + json.OM);
+                                                $("#ObtainedMarksP").text("Not Met: " + json.OMP );
+                                                $("#NAQ").text("Not Applicable: " + json.NA);
+                                                $("#TotalM").text("Fully Met: " + json.TM);
+                                                alertify.success("Successfully Submitted");
+                                               // $("#btnSubmit").prop('disabled', false);
+                                            }
+                                        });
+                            } else {
+                                alert("Audit Profile Not Exist Or FormData is not supported.");
+                            }
+                        } catch (e) {
+                        }
+
+                    }
+
+                });
+                function LoadPagesActionData() {
+                    $.ajax({
+                        url: "@Url.Action("GetPagesActionData", "AdminPanel")",
+                        cache: false,
+                        type: "POST",
+                        success: function (data) {
+                            PageAction = data;
+                        }
+                    });
+                }
+             
+                $("#cbSelectAll").click(function () {
+
+                    $("input[name=page]").not(this).prop('checked', this.checked);
+                });
+              
+                function LoadQA() {
+                    try {
+                        var CenterID = $("#SubDeptID").val();
+                        var CategoryID = $("#DeptID").val();
+                        var DeptID = $("#CenterDeptID").val();
+                        var audit_id = $("#audit_id").val();
+
+                        $.ajax({
+                            type: "POST",
+                            data: { CategoryID: CategoryID, CenterID: CenterID, DeptID: DeptID, audit_id: audit_id },
+                            url: "@Url.Action("GetQAList", "Department")",
+                            cache: false,
+                            success: function (json) {
+                                $("#ObtainedMarks").text("");
+                                $("#ObtainedMarksP").text("");
+                                $("#TotalM").text("");
+                                $("#NAQ").text("");
+                                var TotalMarks = json.TM;
+                                $("#forms_ul").empty();
+                                $("#forms_ul").append(json);
+                            }
+                        });
+                    } catch (e) {
+                    }
+    }
+
+                $("#CenterDeptID").change(function () {
+                    LoadQA();
+                });
+                $(document).ready(function () {
+                    $("#btnSubmit").prop('disabled', false);
+                    var ID = $(this).attr("data-id");
+                    var PageAction = null;
+                    $('#info').hide();
+                    LoadPagesActionData();
+                    $("#liSetup,#liRegion").addClass("active");
+                    var WriteCheck = "0";
+                    if (WriteCheck == "@HttpContext.Current.Session["WriteCheck"]") {
+                        $("#btnNew").attr("disabled", true);
+                    }
+                    else {
+                    }
+                    $("#btnRefresh").click(function () {
+                        ClearForm();
+                    });
+                });
+</script>
+<script type="text/javascript">
+
+    function ClearForm() {
+        $('#Name').val('');
+        $('#ShortCode').val('');
+        $('#ID').val(0);
+        $('#create').text('Create');
+    }
+
+    function OnSuccess(response) {
+        if (response == "1") {
+            alertify.success("Department Saved Successfully");
+            $('#create').text('Create');
+            var dt = $('#datatab').DataTable();
+            dt.ajax.reload();
+            ClearForm();
+        }
+        else if (response == "0") {
+            alertify.error("Unable To Save Department.");
+        }
+        else if (response == "2") {
+            alertify.error("Department Code Already Exist");
+        }
+
+
+    }
+
+
+</script>
