@@ -86,6 +86,7 @@
         <EntityTypeShape EntityType="FOS_WallCoatModel.Audit" Width="1.5" PointX="7.375" PointY="9.75" />
         <EntityTypeShape EntityType="FOS_WallCoatModel.Approvel" Width="1.5" PointX="9.375" PointY="9.75" />
         <EntityTypeShape EntityType="FOS_WallCoatModel.ComplianceReport" Width="1.5" PointX="3.375" PointY="11.75" />
+        <EntityTypeShape EntityType="FOS_WallCoatModel.ComplianceRatedNumber" Width="1.5" PointX="11.375" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

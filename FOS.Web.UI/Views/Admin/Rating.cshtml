@@ -41,7 +41,7 @@
                             <h4>Manage Question Rating</h4>
                             <span class="tools">
                                 @Html.HiddenFor(model => model.audit_id)
-                                @Html.TextBoxFor(model => model.AuditYear, new { @class = "form-control", @readonly=true,@disabled="disabled"})
+                                @Html.TextBoxFor(model => model.AuditYear, new { @class = "form-control", @readonly = true, @disabled = "disabled" })
                             </span>
                         </div>
                         <div class="widget-body">
@@ -157,12 +157,12 @@
     //    });
     //    $("#btnCapture").click(function () {
     //        Webcam.attach('#webcam');
- 
+
     //        var ID =this.attr("data-id");
     //        Webcam.snap(function (data_uri) {
     //            $("#imgCapture" + ID)[0].src = data_uri;
     //        });
-    //    });  
+    //    });
     //});
 
     function loadImage(event) {
@@ -183,7 +183,7 @@
             reader.onload = function (e) {
                 $('#outputImage' + ID).attr('src', e.target.result);
                 $("input[name=ImagePath" + ID + "]").val(e.target.result);
-                
+
             }
             $("input[name=ImageName" + ID + "]").val(event.files[0].name);
 
@@ -277,7 +277,7 @@
                                                 alertify.success("Successfully Submitted");
                                                 $("#btnSubmit").prop('disabled', false);
                                             }
-                                        });                
+                                        });
                             } else {
                                 alert("Audit Profile Not Exist Or FormData is not supported.");
                             }
@@ -376,7 +376,7 @@
                             $('#myModal').modal('show');
                         }
                     });
-                }            
+                }
                 function LoadQA() {
                     try {
                         var CenterID = $("#SubDeptID").val();
@@ -426,30 +426,30 @@
 </script>
 <script type="text/javascript">
 
-                function ClearForm() {
-                    $('#Name').val('');
-                    $('#ShortCode').val('');
-                    $('#ID').val(0);
-                    $('#create').text('Create');
-                }
+    function ClearForm() {
+        $('#Name').val('');
+        $('#ShortCode').val('');
+        $('#ID').val(0);
+        $('#create').text('Create');
+    }
 
-                function OnSuccess(response) {
-                    if (response == "1") {
-                        alertify.success("Department Saved Successfully");
-                        $('#create').text('Create');
-                        var dt = $('#datatab').DataTable();
-                        dt.ajax.reload();
-                        ClearForm();
-                    }
-                    else if (response == "0") {
-                        alertify.error("Unable To Save Department.");
-                    }
-                    else if (response == "2") {
-                        alertify.error("Department Code Already Exist");
-                    }
+    function OnSuccess(response) {
+        if (response == "1") {
+            alertify.success("Department Saved Successfully");
+            $('#create').text('Create');
+            var dt = $('#datatab').DataTable();
+            dt.ajax.reload();
+            ClearForm();
+        }
+        else if (response == "0") {
+            alertify.error("Unable To Save Department.");
+        }
+        else if (response == "2") {
+            alertify.error("Department Code Already Exist");
+        }
 
 
-                }
+    }
 
 
 </script>

@@ -113,6 +113,9 @@
     <Compile Include="CityPaintersByRetailer_Result.cs">
       <DependentUpon>FOSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ComplianceRatedNumber.cs">
+      <DependentUpon>FOSDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="ComplianceReport.cs">
       <DependentUpon>FOSDataModel.tt</DependentUpon>
     </Compile>

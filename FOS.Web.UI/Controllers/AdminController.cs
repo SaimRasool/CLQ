@@ -700,7 +700,6 @@ namespace FOS.Web.UI.Controllers
         }
         public string GetQAList(int CategoryID, int CenterID, int DeptID, int audit_id)
         {
-
             string Res = "";
             List<RatingData> questions = ManageAdmin.GetQList(CategoryID, CenterID, DeptID, audit_id);
             //int TotalNumber = questions.Count * 10;

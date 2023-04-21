@@ -260,7 +260,8 @@ namespace CLQApp.Controllers
         #region Audit
         public ActionResult CreateAudit()
         {
-            return View();
+            Audit obj = new Audit();
+            return View(obj);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
