@@ -11,11 +11,11 @@ namespace FOS.DataLayer
 {
     using System;
     
-    public partial class GetSummaryCLRList1_2_Result
+    public partial class GetComplianceSummary_Result
     {
         public string Category { get; set; }
         public string Question { get; set; }
-        public int RatedMarks { get; set; }
+        public Nullable<int> RatedMarks { get; set; }
         public string Center { get; set; }
         public string Department { get; set; }
         public string Remarks { get; set; }

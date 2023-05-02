@@ -2142,5 +2142,22 @@ namespace FOS.DataLayer
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_get_StaffDetail_Result>("usp_get_StaffDetail");
         }
+    
+        public virtual ObjectResult<GetComplianceSummary_Result> GetComplianceSummary(Nullable<int> categoryID, Nullable<int> centerID, Nullable<int> audit_id)
+        {
+            var categoryIDParameter = categoryID.HasValue ?
+                new ObjectParameter("CategoryID", categoryID) :
+                new ObjectParameter("CategoryID", typeof(int));
+    
+            var centerIDParameter = centerID.HasValue ?
+                new ObjectParameter("CenterID", centerID) :
+                new ObjectParameter("CenterID", typeof(int));
+    
+            var audit_idParameter = audit_id.HasValue ?
+                new ObjectParameter("audit_id", audit_id) :
+                new ObjectParameter("audit_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetComplianceSummary_Result>("GetComplianceSummary", categoryIDParameter, centerIDParameter, audit_idParameter);
+        }
     }
 }

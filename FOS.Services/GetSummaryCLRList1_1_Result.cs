@@ -18,5 +18,6 @@ namespace FOS.DataLayer
         public int RatedMarks { get; set; }
         public string Center { get; set; }
         public string Department { get; set; }
+        public string Remarks { get; set; }
     }
 }

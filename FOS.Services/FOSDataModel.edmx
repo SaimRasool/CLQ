@@ -583,6 +583,11 @@
           <Parameter Name="DeptID" Type="int" Mode="In" />
           <Parameter Name="audit_id" Type="int" Mode="In" />
         </Function>
+        <Function Name="GetComplianceSummary" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CategoryID" Type="int" Mode="In" />
+          <Parameter Name="CenterID" Type="int" Mode="In" />
+          <Parameter Name="audit_id" Type="int" Mode="In" />
+        </Function>
         <Function Name="GetDaysDoctorWise1_1" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" StoreFunctionName="GetDaysDoctorWise1.1">
           <Parameter Name="DoctorID" Type="int" Mode="In" />
         </Function>
@@ -1455,6 +1460,11 @@
           <EntitySet Name="Approvel" EntityType="FOS_WallCoatModel.Approvel" />
           <EntitySet Name="ComplianceReport" EntityType="FOS_WallCoatModel.ComplianceReport" />
           <EntitySet Name="ComplianceRatedNumber" EntityType="FOS_WallCoatModel.ComplianceRatedNumber" />
+          <FunctionImport Name="GetComplianceSummary" ReturnType="Collection(FOS_WallCoatModel.GetComplianceSummary_Result)">
+            <Parameter Name="CategoryID" Mode="In" Type="Int32" />
+            <Parameter Name="CenterID" Mode="In" Type="Int32" />
+            <Parameter Name="audit_id" Mode="In" Type="Int32" />
+          </FunctionImport>
           </EntityContainer>
         <ComplexType Name="AreasRelatedtoCities_Result">
           <Property Type="Int32" Name="SaleOfficerID" Nullable="true" />
@@ -2982,6 +2992,7 @@
           <Property Type="Int32" Name="RatedMarks" Nullable="false" />
           <Property Type="String" Name="Center" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="Department" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Remarks" Nullable="false" />
         </ComplexType>
         <EntityType Name="AuditComponent">
           <Key>
@@ -3117,6 +3128,7 @@
           <Property Type="Int32" Name="RatedMarks" Nullable="false" />
           <Property Type="String" Name="Center" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="Department" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Remarks" Nullable="false" />
         </ComplexType>
         <EntityType Name="User">
           <Key>
@@ -3248,6 +3260,14 @@
           <Property Name="ImagePath" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="remarks" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
         </EntityType>
+        <ComplexType Name="GetComplianceSummary_Result">
+          <Property Type="String" Name="Category" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Question" Nullable="true" MaxLength="800" />
+          <Property Type="Int32" Name="RatedMarks" Nullable="true" />
+          <Property Type="String" Name="Center" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Department" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Remarks" Nullable="false" />
+        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4068,6 +4088,17 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GetComplianceSummary" FunctionName="FOS_WallCoatModel.Store.GetComplianceSummary">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="FOS_WallCoatModel.GetComplianceSummary_Result">
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Question" ColumnName="Question" />
+                <ScalarProperty Name="RatedMarks" ColumnName="RatedMarks" />
+                <ScalarProperty Name="Center" ColumnName="Center" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
