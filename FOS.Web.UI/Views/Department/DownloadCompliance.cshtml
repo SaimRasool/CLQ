@@ -34,6 +34,7 @@
                     <div class="control-group offset3" style="border-top: 1px solid #e5e5e5;">
                         <div class="form-actions" style="padding-left: 240px;">
                             <button type="button" class="btn btn-small btn-info" id="btnReport"><i class="icon-white" style="padding-right: 8px;"></i>Show</button>
+                            <button type="button" class="btn btn-small btn-info" id="btnDwnReport"><i class="icon-white" style="padding-right: 8px;"></i>Download</button>
                         </div>
                     </div>
                 </div>
@@ -113,8 +114,16 @@
             $('#ResultModal').modal('toggle');
         });
     });
-
-
+     function GetSReport(CategoryID, CenterID, audit_id, RegionID) {
+        window.open("@Url.Action("DownlCompliance", "Department")" + "?CategoryID=" + CategoryID + "&CenterID=" + CenterID + "&audit_id=" + audit_id + "&RegionID=" + RegionID);
+    }
+    $("#btnDwnReport").click(function () {
+        var CategoryID = $("#DeptID").val();
+        var CenterID = $("#SubDeptID").val();
+        var audit_id = $("#audit_id").val();
+        var RegionID = $("#RegionID").val();
+        GetSReport(CategoryID, CenterID, audit_id, RegionID);
+    });
 
     function GetData(url, data, divId, callback) {
         $.ajax({

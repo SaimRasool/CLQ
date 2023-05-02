@@ -26,6 +26,7 @@ using static System.Windows.Forms.DataFormats;
 using System.IO;
 using Org.BouncyCastle.Ocsp;
 using static iTextSharp.tool.xml.html.HTML;
+using System.Drawing;
 
 namespace FOS.Web.UI.Controllers
 {
@@ -34,30 +35,45 @@ namespace FOS.Web.UI.Controllers
         [System.Web.Http.Authorize]
         public ActionResult Index()
         {
-            FOSDataModel db = new FOSDataModel();
-            var approvel = db.Approvel.Where(u => u.LeadApprovel == false && u.AdminApprovel == false).ToList();
-            QAData obj = new QAData();
-            obj.Audit = ManageAdmin.GetAuditForGrid();
-            foreach (var author in approvel)
-            {
-                obj.Audit.RemoveAll(x => x.audit_id == author.AuditID);
-            }
-            obj.audit_id = obj.Audit.Where(x => x.is_active == true).FirstOrDefault().audit_id;
             if (System.Web.HttpContext.Current.Session["UserID"] == null)
             {
                 Response.Redirect("~/Department/Login");
             }
-            obj.SubDeptID = (int)Session["UserID"];
+            int centerID = (int)Session["UserID"];
+            FOSDataModel db = new FOSDataModel();
+            QAData obj = new QAData();
+            obj.Audit = new List<Audit>();
+            List<Audit> AuditList = ManageAdmin.GetAuditForGrid();
+            foreach(var audit in AuditList)
+            {
+                var approvel = db.Approvel.Where(u => u.LeadApprovel == true && u.AdminApprovel == true && u.CenterID == centerID && u.AuditID==audit.audit_id).FirstOrDefault();
+                if (approvel != null)
+                    obj.Audit.Add(audit);
+            }
+            
+            //foreach (var author in approvel)
+            //{
+            //    obj.Audit.RemoveAll(x => x.audit_id == author.AuditID);
+            //}
+            
+            obj.audit_id = obj.Audit.Count>0? obj.Audit.Where(x => x.is_active == true).FirstOrDefault().audit_id:0;
+         
+            obj.SubDeptID = centerID;
             SubDepartment sub = db.SubDepartments.Where(u => u.ID == obj.SubDeptID).FirstOrDefault();
             List<CenterDepartment> centers = db.CenterDepartments.Where(u => u.CenterID == obj.SubDeptID).ToList();
             obj.CenterDept = new List<CenterDepartmentData>();
-            foreach (var cent in centers)
+            if(obj.audit_id!=0)
             {
-                CenterDepartmentData data = new CenterDepartmentData();
-                data.Name = cent.Name;
-                data.ID = cent.ID;
-                obj.CenterDept.Add(data);
+                foreach (var cent in centers)
+                {
+
+                    CenterDepartmentData data = new CenterDepartmentData();
+                    data.Name = cent.Name;
+                    data.ID = cent.ID;
+                    obj.CenterDept.Add(data);
+                }
             }
+           
             obj.DeptID = (int)sub.DeptID;
             return View(obj);
         }
@@ -98,9 +114,9 @@ namespace FOS.Web.UI.Controllers
                   
                   sr = sr + 1;
                     Res += "<div class='row'> <div class='col-md-2 col-sm-4'> <input type='checkbox' checked name='page' data-id='" + d.RID + "' id='page1'" + d.RID + "' /> &nbsp;&nbsp; " + sr + " &nbsp;&nbsp; " +
-                        "<input type='hidden' id='TotalMarks' name='TotalMarks' value='" + TotalNumber + "'> </div>" +
+                        "<input type='hidden' id='TotalMarks' name='TotalMarks' value='" + TotalNumber + "'> </div><label style='display:unset!important;color:black'  rows='2' cols='70' readonly>" + d.RName + "</label></div>" +
                            //Question.1
-                           "<div class='col-md-2 col-sm-4'>" +
+                           "<div class='row'><div class='col-md-2 col-sm-4'>" +
                            "<input type='radio' name='action" + d.RID + "' class='cbAction' data-id='" + d.RID + "' data-ten='" + d.Zero + "' value='0' />" +
                            "<label for='action" + d.RID + "'>Fully Met</label> </div>" +
                            //Question.2
@@ -267,13 +283,16 @@ namespace FOS.Web.UI.Controllers
         [System.Web.Http.Authorize]
         public ActionResult Reports()
         {
+            int centerID = (int)Session["UserID"];
             FOSDataModel db = new FOSDataModel();
-            var approvel = db.Approvel.Where(u => u.LeadApprovel == false && u.AdminApprovel == false).ToList();
             QAData obj = new QAData();
-            obj.Audit = ManageAdmin.GetAuditForGrid();
-            foreach (var author in approvel)
+            obj.Audit = new List<Audit>();
+            List<Audit> AuditList = ManageAdmin.GetAuditForGrid();
+            foreach (var audit in AuditList)
             {
-                obj.Audit.RemoveAll(x => x.audit_id == author.AuditID);
+                var approvel = db.Approvel.Where(u => u.LeadApprovel == true && u.AdminApprovel == true && u.CenterID == centerID && u.AuditID == audit.audit_id).FirstOrDefault();
+                if (approvel != null)
+                    obj.Audit.Add(audit);
             }
             List<Department> AllDept = ManageAdmin.GetAllDepartment();
             obj.Dept = AllDept;
@@ -291,7 +310,7 @@ namespace FOS.Web.UI.Controllers
         public ActionResult ComplianceReports()
         {
             FOSDataModel db = new FOSDataModel();
-            var approvel = db.Approvel.Where(u => u.LeadApprovel == false && u.AdminApprovel == false).ToList();
+            var approvel = db.Approvel.Where(u => u.LeadApprovel == false && u.AdminApprovel == false && u.CenterID == (int)Session["UserID"] ).ToList();
             QAData obj = new QAData();
             obj.Audit = ManageAdmin.GetAuditForGrid();
             foreach (var author in approvel)
@@ -371,18 +390,21 @@ namespace FOS.Web.UI.Controllers
                 Log.Instance.Error(exp, "Report Not Working");
 
             }
-            //return Json(0);
+           
         }
         [System.Web.Http.Authorize]
         public ActionResult UploadCompliance()
         {
+            int centerID = (int)Session["UserID"];
+
             FOSDataModel db = new FOSDataModel();
-            var approvel = db.Approvel.Where(u => u.LeadApprovel == false && u.AdminApprovel == false).ToList();
             QAData obj = new QAData();
-            obj.Audit = ManageAdmin.GetAuditForGrid();
-            foreach (var author in approvel)
+            List<Audit> AuditList = ManageAdmin.GetAuditForGrid();
+            foreach (var audit in AuditList)
             {
-                obj.Audit.RemoveAll(x => x.audit_id == author.AuditID);
+                var approvel = db.Approvel.Where(u => u.LeadApprovel == true && u.AdminApprovel == true && u.CenterID == centerID && u.AuditID == audit.audit_id).FirstOrDefault();
+                if (approvel != null)
+                    obj.Audit.Add(audit);
             }
             List<Department> AllDept = ManageAdmin.GetAllDepartment();
             obj.Dept = AllDept;
@@ -438,6 +460,10 @@ namespace FOS.Web.UI.Controllers
             }
 
         }
+
+
+
+        #region download compliance
         [System.Web.Http.Authorize]
         public ActionResult DownloadCompliance()
         {
@@ -452,13 +478,66 @@ namespace FOS.Web.UI.Controllers
             obj.CenterDept = CenterDept;
             return View(obj);
         }
-        public ActionResult Download(string file)
+        //download compliance report 
+        public void DownlCompliance(int CategoryID, int CenterID, int audit_id, int RegionID)
         {
-            string filepath = AppDomain.CurrentDomain.BaseDirectory + file;
-            string contentType = MimeMapping.GetMimeMapping(filepath);
-            byte[] filedata = System.IO.File.ReadAllBytes(Server.MapPath(file));
-            return File(filedata, contentType);
+            FOSDataModel db = new FOSDataModel();
+            Microsoft.Reporting.WebForms.LocalReport ReportViewer1 = new Microsoft.Reporting.WebForms.LocalReport();
+            try
+            {
+                GetCLRList1_1_Result obj = new GetCLRList1_1_Result();
+                GetSummaryCLRList1_1_Result obj2 = new GetSummaryCLRList1_1_Result();
+                List<GetSummaryCLRList1_1_Result> dtsource = new List<GetSummaryCLRList1_1_Result>();
+                dtsource = ManageAdmin.GetComplianceSummaryCLRForGrid1(CategoryID, CenterID, audit_id);
+                ReportViewer1.ReportPath = Server.MapPath("~/Views/Department/Compliance.rdlc");
+                ReportViewer1.EnableExternalImages = true;
+                ReportDataSource dt2 = new ReportDataSource("DataSet1", dtsource);
+                ReportViewer1.DataSources.Clear();
+
+                // <reportParameter>
+                ReportParameterCollection ReportParamMeters = new ReportParameterCollection();
+                Audit audit = new Audit();
+                Regions region = new Regions();
+                audit = db.Audit.Where(u => u.audit_id == audit_id).FirstOrDefault();
+                region = db.Regions.Where(u => u.ID == RegionID).FirstOrDefault();
+                ReportParamMeters.Add(new ReportParameter("AuditYear", audit.audit_year.ToString()));
+                ReportParamMeters.Add(new ReportParameter("Region", region.Name.ToString()));
+                ReportViewer1.SetParameters(ReportParamMeters);
+                //</reportParameter>
+
+                ReportViewer1.DataSources.Add(dt2);
+                ReportViewer1.Refresh();
+
+
+
+                Warning[] warnings;
+                string[] streamIds;
+                string contentType;
+                string encoding;
+                string extension;
+
+                byte[] bytes = ReportViewer1.Render("PDF", null, out contentType, out encoding, out extension, out streamIds, out warnings);
+
+                Response.Clear();
+                Response.Buffer = true;
+                Response.Charset = "";
+                Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                Response.ContentType = contentType;
+                Response.AddHeader("content-disposition", "attachment;filename=AssessmentReport" + DateTime.Now + ".Pdf");
+                Response.BinaryWrite(bytes);
+                Response.Flush();
+
+                Response.End();
+                //return Json(0);
+            }
+
+            catch (Exception exp)
+            {
+                Log.Instance.Error(exp, "Report Not Working");
+
+            }
         }
+        //Show all uploaded compliance Report
         public ActionResult GetCompliance(int CenterID, int audit_id)
         {
             QAData obj = new QAData();
@@ -467,5 +546,16 @@ namespace FOS.Web.UI.Controllers
             obj.ComplianceReports = db.ComplianceReport.Where(a => a.CenterID == CenterID && a.AuditID == audit_id).ToList();
             return PartialView("~/Views/Shared/_ComplianceReport.cshtml", obj);
         }
+        //Download uploaded compliance Report
+        public ActionResult Download(string file)
+        {
+            string filepath = AppDomain.CurrentDomain.BaseDirectory + file;
+            string contentType = MimeMapping.GetMimeMapping(filepath);
+            byte[] filedata = System.IO.File.ReadAllBytes(Server.MapPath(file));
+            return File(filedata, contentType);
+        }
+      
+        
+        #endregion
     }
 }

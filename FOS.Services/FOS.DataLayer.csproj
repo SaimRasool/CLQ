@@ -173,6 +173,9 @@
     <Compile Include="GetCLRList_Result.cs">
       <DependentUpon>FOSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="GetComplianceSummary_Result.cs">
+      <DependentUpon>FOSDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetDaysDoctorWise1_1_Result.cs">
       <DependentUpon>FOSDataModel.tt</DependentUpon>
     </Compile>

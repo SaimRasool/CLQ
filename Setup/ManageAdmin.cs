@@ -1011,6 +1011,7 @@ namespace FOS.Setup
                     Department = x.Department,
                     Question = x.Question,
                     RatedMarks = x.RatedMarks,
+                    Remarks = x.Remarks,
                 }).ToList();
                 //dtsource.Add(data1);
                 //}          
@@ -1117,6 +1118,40 @@ namespace FOS.Setup
 
             return results;
         }
+
+        public static List<GetSummaryCLRList1_1_Result> GetComplianceSummaryCLRForGrid1(int CategoryID, int CenterID, int audit_id)
+        {
+            List<GetSummaryCLRList1_1_Result> dtsource = new List<GetSummaryCLRList1_1_Result>();
+            try
+            {
+                FOSDataModel db = new FOSDataModel();
+                //List<QAData> data1;
+                //var CD = db.CenterDepartments.Where(x => x.CategoryID == CategoryID).Select(x => x.ID).ToList();
+                //foreach (var DeptID in CD)
+                //{
+                //data1 = new List<QAData>();
+                dtsource = db.GetComplianceSummary(CategoryID, CenterID, audit_id).Select(x => new GetSummaryCLRList1_1_Result
+                {
+                    Category = x.Category,
+                    Center = x.Center,
+                    Department = x.Department,
+                    Question = x.Question,
+                    RatedMarks = (int)x.RatedMarks,
+                    Remarks = x.Remarks
+                }).ToList();
+                //dtsource.Add(data1);
+                //}          
+
+            }
+            catch (Exception exp)
+            {
+                Log.Instance.Error(exp, "Get Department List Failed");
+                throw;
+            }
+
+            return dtsource;
+        }
+
         #endregion
 
         #region Access

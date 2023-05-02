@@ -1848,6 +1848,8 @@ namespace FOS.Web.UI {
             
             private global::System.Data.DataColumn columnDepartment;
             
+            private global::System.Data.DataColumn columnRemarks;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public _GetSummaryCLRList1_1DataTable() {
@@ -1923,6 +1925,14 @@ namespace FOS.Web.UI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn RemarksColumn {
+                get {
+                    return this.columnRemarks;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1958,14 +1968,15 @@ namespace FOS.Web.UI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public _GetSummaryCLRList1_1Row Add_GetSummaryCLRList1_1Row(string Category, string Question, int RatedMarks, string Center, string Department) {
+            public _GetSummaryCLRList1_1Row Add_GetSummaryCLRList1_1Row(string Category, string Question, int RatedMarks, string Center, string Department, string Remarks) {
                 _GetSummaryCLRList1_1Row row_GetSummaryCLRList1_1Row = ((_GetSummaryCLRList1_1Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Category,
                         Question,
                         RatedMarks,
                         Center,
-                        Department};
+                        Department,
+                        Remarks};
                 row_GetSummaryCLRList1_1Row.ItemArray = columnValuesArray;
                 this.Rows.Add(row_GetSummaryCLRList1_1Row);
                 return row_GetSummaryCLRList1_1Row;
@@ -1993,6 +2004,7 @@ namespace FOS.Web.UI {
                 this.columnRatedMarks = base.Columns["RatedMarks"];
                 this.columnCenter = base.Columns["Center"];
                 this.columnDepartment = base.Columns["Department"];
+                this.columnRemarks = base.Columns["Remarks"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2008,13 +2020,15 @@ namespace FOS.Web.UI {
                 base.Columns.Add(this.columnCenter);
                 this.columnDepartment = new global::System.Data.DataColumn("Department", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDepartment);
+                this.columnRemarks = new global::System.Data.DataColumn("Remarks", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnRemarks);
                 this.columnCategory.MaxLength = 50;
-                this.columnQuestion.AllowDBNull = false;
                 this.columnQuestion.MaxLength = 500;
                 this.columnRatedMarks.AllowDBNull = false;
                 this.columnCenter.MaxLength = 50;
                 this.columnDepartment.AllowDBNull = false;
                 this.columnDepartment.MaxLength = 50;
+                this.columnRemarks.MaxLength = 300;
                 this.ExtendedProperties.Add("Generator_TableVarName", "_tableGetSummaryCLRList1_1");
                 this.ExtendedProperties.Add("Generator_UserTableName", "GetSummaryCLRList1.1");
             }
@@ -3066,7 +3080,12 @@ namespace FOS.Web.UI {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public string Question {
                 get {
-                    return ((string)(this[this._tableGetSummaryCLRList1_1.QuestionColumn]));
+                    try {
+                        return ((string)(this[this._tableGetSummaryCLRList1_1.QuestionColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Question\' in table \'GetSummaryCLRList1.1\' is DBNull.", e);
+                    }
                 }
                 set {
                     this[this._tableGetSummaryCLRList1_1.QuestionColumn] = value;
@@ -3113,6 +3132,22 @@ namespace FOS.Web.UI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string Remarks {
+                get {
+                    try {
+                        return ((string)(this[this._tableGetSummaryCLRList1_1.RemarksColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Remarks\' in table \'GetSummaryCLRList1.1\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this._tableGetSummaryCLRList1_1.RemarksColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public bool IsCategoryNull() {
                 return this.IsNull(this._tableGetSummaryCLRList1_1.CategoryColumn);
             }
@@ -3125,6 +3160,18 @@ namespace FOS.Web.UI {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsQuestionNull() {
+                return this.IsNull(this._tableGetSummaryCLRList1_1.QuestionColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetQuestionNull() {
+                this[this._tableGetSummaryCLRList1_1.QuestionColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public bool IsCenterNull() {
                 return this.IsNull(this._tableGetSummaryCLRList1_1.CenterColumn);
             }
@@ -3133,6 +3180,18 @@ namespace FOS.Web.UI {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public void SetCenterNull() {
                 this[this._tableGetSummaryCLRList1_1.CenterColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsRemarksNull() {
+                return this.IsNull(this._tableGetSummaryCLRList1_1.RemarksColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetRemarksNull() {
+                this[this._tableGetSummaryCLRList1_1.RemarksColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -4451,6 +4510,7 @@ namespace FOS.Web.UI.ODASDataSetTableAdapters {
             tableMapping.ColumnMappings.Add("RatedMarks", "RatedMarks");
             tableMapping.ColumnMappings.Add("Center", "Center");
             tableMapping.ColumnMappings.Add("Department", "Department");
+            tableMapping.ColumnMappings.Add("Remarks", "Remarks");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
@@ -4459,6 +4519,15 @@ namespace FOS.Web.UI.ODASDataSetTableAdapters {
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@RETURN_VALUE", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.ReturnValue, 10, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CategoryID", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, "Category", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CenterID", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, "Center", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@audit_id", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, "", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
+            this._adapter.UpdateCommand.Connection = this.Connection;
+            this._adapter.UpdateCommand.CommandText = "dbo.[GetSummaryCLRList1.1]";
+            this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.StoredProcedure;
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@RETURN_VALUE", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.ReturnValue, 10, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CategoryID", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, "Category", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CenterID", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, "Center", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@audit_id", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, "", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4479,13 +4548,14 @@ namespace FOS.Web.UI.ODASDataSetTableAdapters {
             this._commandCollection[0].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@RETURN_VALUE", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.ReturnValue, 10, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[0].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CategoryID", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[0].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CenterID", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[0].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@audit_id", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, true)]
-        public virtual int Fill(ODASDataSet._GetSummaryCLRList1_1DataTable dataTable, global::System.Nullable<int> CategoryID, global::System.Nullable<int> CenterID) {
+        public virtual int Fill(ODASDataSet._GetSummaryCLRList1_1DataTable dataTable, global::System.Nullable<int> CategoryID, global::System.Nullable<int> CenterID, global::System.Nullable<int> audit_id) {
             this.Adapter.SelectCommand = this.CommandCollection[0];
             if ((CategoryID.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[1].Value = ((int)(CategoryID.Value));
@@ -4498,6 +4568,12 @@ namespace FOS.Web.UI.ODASDataSetTableAdapters {
             }
             else {
                 this.Adapter.SelectCommand.Parameters[2].Value = global::System.DBNull.Value;
+            }
+            if ((audit_id.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[3].Value = ((int)(audit_id.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
             if ((this.ClearBeforeFill == true)) {
                 dataTable.Clear();
@@ -4510,7 +4586,7 @@ namespace FOS.Web.UI.ODASDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
-        public virtual ODASDataSet._GetSummaryCLRList1_1DataTable GetData(global::System.Nullable<int> CategoryID, global::System.Nullable<int> CenterID) {
+        public virtual ODASDataSet._GetSummaryCLRList1_1DataTable GetData(global::System.Nullable<int> CategoryID, global::System.Nullable<int> CenterID, global::System.Nullable<int> audit_id) {
             this.Adapter.SelectCommand = this.CommandCollection[0];
             if ((CategoryID.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[1].Value = ((int)(CategoryID.Value));
@@ -4523,6 +4599,12 @@ namespace FOS.Web.UI.ODASDataSetTableAdapters {
             }
             else {
                 this.Adapter.SelectCommand.Parameters[2].Value = global::System.DBNull.Value;
+            }
+            if ((audit_id.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[3].Value = ((int)(audit_id.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
             ODASDataSet._GetSummaryCLRList1_1DataTable dataTable = new ODASDataSet._GetSummaryCLRList1_1DataTable();
             this.Adapter.Fill(dataTable);
@@ -4562,7 +4644,7 @@ namespace FOS.Web.UI.ODASDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(global::System.Nullable<int> CategoryID, global::System.Nullable<int> CenterID) {
+        public virtual int Insert(global::System.Nullable<int> CategoryID, global::System.Nullable<int> CenterID, global::System.Nullable<int> audit_id) {
             if ((CategoryID.HasValue == true)) {
                 this.Adapter.InsertCommand.Parameters[1].Value = ((int)(CategoryID.Value));
             }
@@ -4574,6 +4656,12 @@ namespace FOS.Web.UI.ODASDataSetTableAdapters {
             }
             else {
                 this.Adapter.InsertCommand.Parameters[2].Value = global::System.DBNull.Value;
+            }
+            if ((audit_id.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[3].Value = ((int)(audit_id.Value));
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -4587,6 +4675,45 @@ namespace FOS.Web.UI.ODASDataSetTableAdapters {
             finally {
                 if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
                     this.Adapter.InsertCommand.Connection.Close();
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
+        public virtual int Update(global::System.Nullable<int> CategoryID, global::System.Nullable<int> CenterID, global::System.Nullable<int> audit_id) {
+            if ((CategoryID.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[1].Value = ((int)(CategoryID.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[1].Value = global::System.DBNull.Value;
+            }
+            if ((CenterID.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[2].Value = ((int)(CenterID.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[2].Value = global::System.DBNull.Value;
+            }
+            if ((audit_id.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[3].Value = ((int)(audit_id.Value));
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
+            if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                this.Adapter.UpdateCommand.Connection.Open();
+            }
+            try {
+                int returnValue = this.Adapter.UpdateCommand.ExecuteNonQuery();
+                return returnValue;
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    this.Adapter.UpdateCommand.Connection.Close();
                 }
             }
         }
