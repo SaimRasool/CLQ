@@ -88,7 +88,7 @@ namespace FOS.Web.UI.Controllers
                 Res="You already submit thier response please contact to Admin";
                 return Res;
             }
-            List<RatingData> questions = ManageAdmin.GetQList(CategoryID, CenterID, DeptID, audit_id);
+            List<RatingData> questions = ManageAdmin.GetQListForUpdateRequest(CategoryID, CenterID, DeptID, audit_id);
             int TotalNumber = 0;
             Session["TotalMarks"] = TotalNumber;
             int ObtainedMarks = 0;
